@@ -16,22 +16,34 @@ function getDep(name) {
   return dependencies[name].replace('^', '').trim();
 }
 
-const prodDependencies = {
-  react: [
+const prodDependencies = [
+  [
+    'react',
+    'React',
     `https://unpkg.com/react@${getDep('react')}/umd/react.production.min.js`,
-    'global',
     'crossorigin',
     'anonymous',
   ],
-  'react-dom': [
+  [
+    'react-dom',
+    'ReactDOM',
     `https://unpkg.com/react-dom@${getDep(
       'react-dom',
     )}/umd/react-dom.production.min.js`,
-    'global',
     'crossorigin',
     'anonymous',
   ],
-};
+];
+
+const html = new HtmlWebpackPlugin({
+  filename: 'index.html',
+  template: join(__dirname, 'index.ejs'),
+  inject: true,
+  minify: !isDev,
+  templateParameters: {
+    dependencies: isDev ? [] : prodDependencies,
+  },
+});
 
 const config = {
   entry: join(__dirname, 'src', 'index.tsx'),
@@ -110,7 +122,9 @@ const config = {
     ],
   },
   externalsType: 'script',
-  externals: isDev ? {} : prodDependencies,
+  externals: isDev
+    ? {}
+    : Object.fromEntries(prodDependencies.map((dep) => [dep[0], 'root ' + dep[1]])),
   optimization: {
     minimize: !isDev,
     minimizer: [
@@ -128,11 +142,7 @@ const config = {
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: join(__dirname, 'index.html'),
-      inject: true,
-    }),
+    html,
     new CopyPlugin({
       patterns: [
         {
