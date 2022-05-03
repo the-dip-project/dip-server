@@ -16,24 +16,7 @@ function getDep(name) {
   return dependencies[name].replace('^', '').trim();
 }
 
-const prodDependencies = [
-  [
-    'react',
-    'React',
-    `https://unpkg.com/react@${getDep('react')}/umd/react.production.min.js`,
-    'crossorigin',
-    'anonymous',
-  ],
-  [
-    'react-dom',
-    'ReactDOM',
-    `https://unpkg.com/react-dom@${getDep(
-      'react-dom',
-    )}/umd/react-dom.production.min.js`,
-    'crossorigin',
-    'anonymous',
-  ],
-];
+const prodDependencies = [];
 
 const html = new HtmlWebpackPlugin({
   filename: 'index.html',
@@ -124,7 +107,9 @@ const config = {
   externalsType: 'script',
   externals: isDev
     ? {}
-    : Object.fromEntries(prodDependencies.map((dep) => [dep[0], 'root ' + dep[1]])),
+    : Object.fromEntries(
+      prodDependencies.map((dep) => [dep[0], 'root ' + dep[1]]),
+    ),
   optimization: {
     minimize: !isDev,
     minimizer: [
