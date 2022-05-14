@@ -36,11 +36,6 @@ export class LogEntity {
   @CreateDateColumn({ name: 'creation_date' })
   creationDate!: Date;
 
-  @Column('text', {
-    name: 'fingerprint',
-  })
-  fingerprint!: string;
-
   @Column('text', { name: 'source' })
   source!: string;
 }
