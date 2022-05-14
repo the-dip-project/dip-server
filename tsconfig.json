@@ -20,10 +20,24 @@
     "jsx": "react-jsx",
     "esModuleInterop": false,
     "paths": {
-      "@/common": ["libs/common/src"],
-      "@/common/*": ["libs/common/src/*"],
-      "@/view": ["apps/view/src"],
-      "@/view/*": ["apps/view/src/*"]
+      "@/common": [
+        "libs/common/src"
+      ],
+      "@/common/*": [
+        "libs/common/src/*"
+      ],
+      "@/view": [
+        "apps/view/src"
+      ],
+      "@/view/*": [
+        "apps/view/src/*"
+      ],
+      "@/db-logger": [
+        "libs/db-logger/src"
+      ],
+      "@/db-logger/*": [
+        "libs/db-logger/src/*"
+      ]
     }
   }
 }

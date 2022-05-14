@@ -37,6 +37,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
+    },
+    "db-logger": {
+      "type": "library",
+      "root": "libs/db-logger",
+      "entryFile": "index",
+      "sourceRoot": "libs/db-logger/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/db-logger/tsconfig.lib.json"
+      }
     }
   }
 }
