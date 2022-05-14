@@ -38,11 +38,16 @@ const schema = Joi.object({
   ENVIRONMENT: Joi.string()
     .valid('development', 'production')
     .default('production'),
-  DATAPATH: Joi.string()
-    .allow(null, '')
-    .pattern(
-      /^(?:[a-z]:)?[\/\\]{0,2}(?:[.\/\\ ](?![.\/\\\n])|[^<>:"|?*.\/\\ \n])+$/,
-    ),
+  DATAPATH: Joi.alternatives(
+    Joi.string()
+      .allow(null, '')
+      .pattern(
+        /^(?:[a-z]:)?[\/\\]{0,2}(?:[.\/\\ ](?![.\/\\\n])|[^<>:"|?*.\/\\ \n])+$/,
+      ),
+    Joi.string()
+      .allow(null, '')
+      .pattern(/^(\/)?([^/\0]+(\/)?)+$/),
+  ),
 });
 
 export enum ConfigKeys {
