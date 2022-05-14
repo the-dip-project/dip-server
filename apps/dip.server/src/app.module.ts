@@ -1,10 +1,12 @@
-import { Module, Logger } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import configModule, { ConfigKeys } from './base/config.module';
+import typeOrmModule from './base/type-orm.module';
 import { ViewModule } from './view/view.module';
 
 @Module({
-  imports: [configModule, ViewModule],
+  imports: [configModule, typeOrmModule, ViewModule],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);
