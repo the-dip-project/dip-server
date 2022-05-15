@@ -10,6 +10,10 @@ export type Schema = {
   data: {
     path: string;
   };
+  fallbackServers: Array<{
+    ip: string;
+    proto: 'tcp' | 'udp';
+  }>;
 };
 
 function defaultDatapath(): string {
@@ -19,6 +23,8 @@ function defaultDatapath(): string {
     'data',
   );
 }
+
+const fallbacks = [];
 
 function load(): Schema {
   const env = ['development', 'production'].indexOf(process.env.ENVIRONMENT);
@@ -30,8 +36,35 @@ function load(): Schema {
     port: Number(process.env.PORT),
     env,
     data: { path: datapath },
+    fallbackServers: fallbacks.map(({ ip, proto }) => ({
+      ip,
+      proto: proto ? proto : 'udp',
+    })),
   };
 }
+
+const customJoi = Joi.extend((joi) => ({
+  base: joi.array(),
+  type: 'stringArray',
+  coerce: ((value) =>
+    typeof value === 'string'
+      ? { value: value.split(',') }
+      : { value }) as Joi.CoerceFunction,
+})).extend((joi) => ({
+  base: joi.object(),
+  type: 'ipWProto',
+  coerce: ((value) => {
+    if (typeof value !== 'string') return value;
+
+    const [ip, proto] = value.split('/');
+
+    fallbacks.push({ ip, proto });
+
+    return {
+      value: { ip, proto },
+    };
+  }) as Joi.CoerceFunction,
+}));
 
 const schema = Joi.object({
   PORT: Joi.number().min(1).max(65535).required(),
@@ -48,12 +81,22 @@ const schema = Joi.object({
       .allow(null, '')
       .pattern(/^(\/)?([^/\0]+(\/)?)+$/),
   ),
+  FALLBACKS: customJoi
+    .stringArray()
+    .items(
+      customJoi.ipWProto({
+        ip: Joi.string().ip().required(),
+        proto: Joi.string().valid('tcp', 'udp').default('udp'),
+      }),
+    )
+    .default(''),
 });
 
 export enum ConfigKeys {
   SERVER_PORT = 'port',
   ENVIRONMENT = 'env',
   DATAPATH = 'data.path',
+  FALLBACKS = 'fallbackServers',
 }
 
 export default ConfigModule.forRoot({
