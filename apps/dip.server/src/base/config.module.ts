@@ -2,6 +2,7 @@ import * as Joi from 'joi';
 import { resolve } from 'path';
 
 import { Environments } from '@/common/constants/environments';
+import { FallbackAddress } from '@/common/models/fallback-address';
 import { ConfigModule } from '@nestjs/config';
 
 export type Schema = {
@@ -10,10 +11,7 @@ export type Schema = {
   data: {
     path: string;
   };
-  fallbackServers: Array<{
-    ip: string;
-    proto: 'tcp' | 'udp';
-  }>;
+  fallbackServers: Array<FallbackAddress>;
 };
 
 function defaultDatapath(): string {
