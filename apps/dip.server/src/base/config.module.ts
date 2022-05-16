@@ -35,8 +35,6 @@ function load(): Schema {
     ? defaultDatapath()
     : resolve(__dirname, process.env.DATAPATH);
 
-  console.log(process.env);
-
   return {
     port: Number(process.env.PORT),
     env,
@@ -110,6 +108,9 @@ export enum ConfigKeys {
   ENVIRONMENT = 'env',
   DATAPATH = 'data.path',
   FALLBACKS = 'fallbackServers',
+  UDP_PORT = 'ports.udp',
+  TCP_PORT = 'ports.tcp',
+  DOH_PORT = 'ports.doh',
 }
 
 export default ConfigModule.forRoot({
