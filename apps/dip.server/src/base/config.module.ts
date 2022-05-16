@@ -12,6 +12,11 @@ export type Schema = {
     path: string;
   };
   fallbackServers: Array<FallbackAddress>;
+  ports: {
+    udp: number;
+    tcp: number;
+    doh: number;
+  };
 };
 
 function defaultDatapath(): string {
@@ -30,6 +35,8 @@ function load(): Schema {
     ? defaultDatapath()
     : resolve(__dirname, process.env.DATAPATH);
 
+  console.log(process.env);
+
   return {
     port: Number(process.env.PORT),
     env,
@@ -38,6 +45,11 @@ function load(): Schema {
       ip,
       proto: proto ? proto : 'udp',
     })),
+    ports: {
+      udp: Number(process.env.UDP_PORT),
+      tcp: Number(process.env.TCP_PORT),
+      doh: Number(process.env.DOH_PORT),
+    },
   };
 }
 
@@ -88,6 +100,9 @@ const schema = Joi.object({
       }),
     )
     .default(''),
+  UDP_PORT: Joi.number().min(1).max(65535).empty('').default(-1),
+  TCP_PORT: Joi.number().min(1).max(65535).empty('').default(-1),
+  DOH_PORT: Joi.number().min(1).max(65535).empty('').default(-1),
 });
 
 export enum ConfigKeys {
