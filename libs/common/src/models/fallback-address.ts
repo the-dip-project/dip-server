@@ -1,4 +1,6 @@
 export type FallbackAddress = {
-  ip: string;
-  proto: 'tcp' | 'udp';
+  host: string;
+  port: number;
+  path?: string;
+  proto: 'https' | 'tls' | 'udp';
 };

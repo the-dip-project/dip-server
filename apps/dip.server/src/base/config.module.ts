@@ -28,6 +28,11 @@ function defaultDatapath(): string {
 }
 
 const fallbacks = [];
+const defaultPort = {
+  https: 443,
+  tls: 853,
+  udp: 53,
+};
 
 function load(): Schema {
   const env = ['development', 'production'].indexOf(process.env.ENVIRONMENT);
@@ -39,10 +44,22 @@ function load(): Schema {
     port: Number(process.env.PORT),
     env,
     data: { path: datapath },
-    fallbackServers: fallbacks.map(({ ip, proto }) => ({
-      ip,
-      proto: proto ? proto : 'udp',
-    })),
+    fallbackServers: fallbacks.map(
+      ({ host, port: _port, path: _path, proto: _proto }) => {
+        const proto = _proto ?? 'udp';
+        const port = _port ? Number(_port) : defaultPort[proto];
+
+        const result: FallbackAddress = {
+          host,
+          port,
+          proto,
+        };
+
+        if (proto === 'https') result.path = _path ?? '/';
+
+        return result;
+      },
+    ),
     ports: {
       udp: Number(process.env.UDP_PORT),
       tcp: Number(process.env.TCP_PORT),
@@ -60,16 +77,20 @@ const customJoi = Joi.extend((joi) => ({
       : { value }) as Joi.CoerceFunction,
 })).extend((joi) => ({
   base: joi.object(),
-  type: 'ipWProto',
+  type: 'dnsFallback',
   coerce: ((value) => {
     if (typeof value !== 'string') return value;
 
-    const [ip, proto] = value.split('/');
+    const [address, proto] = value.split('$');
+    const url = new URL(
+      address.match(/^(http|https)/i) ? address : 'http://' + address,
+    );
+    const { hostname: host, port, pathname: path } = url;
 
-    fallbacks.push({ ip, proto });
+    fallbacks.push({ host, port, path, proto });
 
     return {
-      value: { ip, proto },
+      value: { host, port, proto: proto ?? 'udp' },
     };
   }) as Joi.CoerceFunction,
 }));
@@ -92,9 +113,10 @@ const schema = Joi.object({
   FALLBACKS: customJoi
     .stringArray()
     .items(
-      customJoi.ipWProto({
-        ip: Joi.string().ip().required(),
-        proto: Joi.string().valid('tcp', 'udp').default('udp'),
+      customJoi.dnsFallback({
+        host: Joi.string().hostname().required(),
+        port: Joi.number().min(1).max(65535).empty(''),
+        proto: Joi.string().valid('https', 'tls', 'udp').default('udp'),
       }),
     )
     .default(''),
