@@ -29,6 +29,7 @@ function defaultDatapath(): string {
 
 const fallbacks = [];
 const defaultPort = {
+  http: 80,
   https: 443,
   tls: 853,
   udp: 53,
@@ -116,7 +117,7 @@ const schema = Joi.object({
       customJoi.dnsFallback({
         host: Joi.string().hostname().required(),
         port: Joi.number().min(1).max(65535).empty(''),
-        proto: Joi.string().valid('https', 'tls', 'udp').default('udp'),
+        proto: Joi.string().valid('http', 'https', 'tls', 'udp').default('udp'),
       }),
     )
     .default(''),
