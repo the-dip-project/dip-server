@@ -61,9 +61,7 @@ export class DnsClientService {
     if (!question) return [];
 
     const address = this.#_internals.proto.match(/^http/)
-      ? `${this.#_internals.host}:${this.#_internals.port}${
-          this.#_internals.path
-        }`
+      ? `${this.#_internals.host}:${this.#_internals.port}`
       : `${this.#_internals.host}`;
 
     const resolve = DnsClientService.#clientMap[this.#_internals.proto]({
