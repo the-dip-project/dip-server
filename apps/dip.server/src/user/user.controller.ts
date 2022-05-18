@@ -83,6 +83,14 @@ export class UserController {
     }
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Post('/logout')
+  public logout(@Res({ passthrough: true }) res: Response): ResponseDTO<void> {
+    res.clearCookie(CookieEntries.AUTH_TOKEN);
+
+    return new ResponseDTO(HttpStatus.OK, []);
+  }
+
   @Get('/:userId')
   public async getUser(
     @Param() { userId: _userId }: GetUserParamDTO,
