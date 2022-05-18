@@ -41,6 +41,11 @@ const config = {
       '@/view': resolve(__dirname, 'src'),
       '@/common': commonLibDir,
     },
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+      'readable-stream': require.resolve('readable-stream'),
+    },
   },
   node: {
     __dirname: false,
@@ -108,8 +113,8 @@ const config = {
   externals: isDev
     ? {}
     : Object.fromEntries(
-      prodDependencies.map((dep) => [dep[0], 'root ' + dep[1]]),
-    ),
+        prodDependencies.map((dep) => [dep[0], 'root ' + dep[1]]),
+      ),
   optimization: {
     minimize: !isDev,
     minimizer: [
