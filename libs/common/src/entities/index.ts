@@ -1,5 +1,6 @@
 import { LogEntity } from './log.entity';
+import { UserEntity } from './user.entity';
 
-export const Entities = [LogEntity];
+export const Entities = [LogEntity, UserEntity];
 
-export { LogEntity };
+export { LogEntity, UserEntity };
