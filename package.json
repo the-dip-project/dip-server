@@ -7,20 +7,20 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build:server": "nest build healthy-first",
-    "build:view:dev": "nest build view -- --dev",
-    "build:view:prod": "nest build view",
-    "build": "npm run build:server && npm run build:view:prod",
+    "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "start:server:dev": "nest start --watch",
-    "start:server:debug": "nest start --debug --watch",
-    "start:server:prod": "node dist/main",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "start:view": "nest build view -- --dev",
+    "build:view": "nest build view",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/healthy-first/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/nest-react-monorepo/test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
