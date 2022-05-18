@@ -16,6 +16,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   NotAcceptableException,
   NotFoundException,
@@ -51,6 +52,7 @@ export class UserController {
     return new ResponseDTO(HttpStatus.OK, [], question);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('/login')
   public async login(
     @Cookies(CookieEntries.REQUEST_ID) rid: string,
