@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import thunk from 'redux-thunk';
 import { ActionTypes } from './ActionTypes';
+import _merge from 'lodash/merge';
+import app from './reducers/app';
 
 const store = configureStore({
-  reducer: {},
-  preloadedState: {},
+  ..._merge({ reducer: {}, preloadedState: {} }, app),
   middleware(getDefaultMiddleware) {
     return [...getDefaultMiddleware(), thunk];
   },
