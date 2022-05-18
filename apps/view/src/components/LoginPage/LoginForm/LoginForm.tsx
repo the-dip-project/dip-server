@@ -1,5 +1,7 @@
+import { SyntheticEvent, useState } from 'react';
+import { useNavigate } from 'react-router';
+
 import { generateAnswer } from '@/common/helpers/generate-answer';
-import { sleep } from '@/common/helpers/sleep';
 import { ResponseDTO } from '@/common/models/dto/response.dto';
 import { breakpoints } from '@/view/constants/breakpoints';
 import styled from '@emotion/styled';
@@ -15,8 +17,6 @@ import {
   Typography,
 } from '@mui/material';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
-import { SyntheticEvent, useState } from 'react';
-import { useNavigate } from 'react-router';
 
 const Root = styled(Paper)`
   height: 100%;
