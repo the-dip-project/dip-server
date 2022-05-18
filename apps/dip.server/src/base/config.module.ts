@@ -54,15 +54,11 @@ function load(): Schema {
         const proto = _proto ?? 'udp';
         const port = _port ? Number(_port) : defaultPort[proto];
 
-        const result: FallbackAddress = {
+        return {
           host,
           port,
           proto,
         };
-
-        if (proto === 'https') result.path = _path ?? '/';
-
-        return result;
       },
     ),
     ports: {
