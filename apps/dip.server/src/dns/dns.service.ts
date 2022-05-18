@@ -13,10 +13,16 @@ import { DnsClientService } from './dns-client/dns-client.service';
   scope: Scope.DEFAULT,
 })
 export class DnsService {
+  private readonly fallbackServers: FallbackAddress[];
+
   public constructor(
-    private readonly configService: ConfigService,
+    configService: ConfigService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-  ) {}
+  ) {
+    this.fallbackServers = configService.get<FallbackAddress[]>(
+      ConfigKeys.FALLBACKS,
+    );
+  }
 
   public async handle(
     request: DnsRequest,
@@ -25,9 +31,7 @@ export class DnsService {
   ): Promise<void> {
     const start = +new Date();
     console.time('Query@' + start);
-    const fallbackServers = this.configService.get<FallbackAddress[]>(
-      ConfigKeys.FALLBACKS,
-    );
+    const { fallbackServers } = this;
 
     const response = Packet.createResponseFromRequest(request);
     const { questions } = request;
@@ -61,6 +65,6 @@ export class DnsService {
     );
 
     send(response);
-    console.timeEnd('Query@' + start);
+    setImmediate(() => console.timeEnd('Query@' + start));
   }
 }
