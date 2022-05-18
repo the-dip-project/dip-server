@@ -2,7 +2,10 @@ import * as Joi from 'joi';
 import { resolve } from 'path';
 
 import { Environments } from '@/common/constants/environments';
-import { FallbackAddress } from '@/common/models/fallback-address';
+import {
+  FallbackAddress,
+  FallbackProtocols,
+} from '@/common/models/fallback-address';
 import { ConfigModule } from '@nestjs/config';
 
 export type Schema = {
@@ -32,6 +35,7 @@ const defaultPort = {
   http: 80,
   https: 443,
   tls: 853,
+  tcp: 53,
   udp: 53,
 };
 
@@ -117,7 +121,9 @@ const schema = Joi.object({
       customJoi.dnsFallback({
         host: Joi.string().hostname().required(),
         port: Joi.number().min(1).max(65535).empty(''),
-        proto: Joi.string().valid('http', 'https', 'tls', 'udp').default('udp'),
+        proto: Joi.string()
+          .valid(...FallbackProtocols)
+          .default('udp'),
       }),
     )
     .default(''),
