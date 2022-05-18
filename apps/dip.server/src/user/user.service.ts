@@ -1,7 +1,6 @@
 import { Cache } from 'cache-manager';
 import { createHash, randomBytes } from 'crypto';
 import { sign } from 'jsonwebtoken';
-import _omit from 'lodash/omit';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
 
@@ -12,6 +11,8 @@ import { LoginChallenge } from '@/common/models/login-challenge';
 import { PublicUser } from '@/common/models/public-user';
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import _omit = require('lodash/omit');
 
 export enum AnswerValidationErrors {
   NOT_FOUND = 0,
