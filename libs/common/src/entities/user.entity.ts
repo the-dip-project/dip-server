@@ -17,6 +17,9 @@ export class UserEntity {
   @Column('int', { name: 'role', nullable: false })
   role!: number;
 
+  @Column('text', { name: 'display_name', nullable: false })
+  displayName!: string;
+
   @Column('datetime', { name: 'creation_date', nullable: false })
   creationDate!: Date;
 }

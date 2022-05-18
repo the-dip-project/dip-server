@@ -41,11 +41,16 @@ export class UserModule {
 
   private async assureRootUserExists(): Promise<void> {
     const rootUser = await this.userRepository.findOne({
-      where: { username: 'root' },
+      where: { username: 'root', role: 0 },
     });
 
     if (!rootUser) {
-      const { id } = await this.userService.createUser('root', 'password', 0);
+      const { id } = await this.userService.createUser(
+        'root',
+        'Administrator',
+        'password',
+        0,
+      );
 
       this.logger.log('Root user created with id: ' + id);
     }

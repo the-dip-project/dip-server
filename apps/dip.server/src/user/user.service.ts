@@ -84,6 +84,7 @@ export class UserService {
 
   public async createUser(
     username: string,
+    displayName: string,
     password: string,
     role: number,
   ): Promise<UserEntity> {
@@ -93,6 +94,7 @@ export class UserService {
         password: createHash('sha256').update(password).digest('hex'),
         role,
         secret: createHash('sha256').update(v4()).digest('hex'),
+        displayName,
         creationDate: Date.now(),
       })
     ).generatedMaps[0] as UserEntity;
