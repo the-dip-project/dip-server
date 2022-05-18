@@ -82,7 +82,7 @@ const customJoi = Joi.extend((joi) => ({
   coerce: ((value) => {
     if (typeof value !== 'string') return value;
 
-    const [address, proto] = value.split('$');
+    const [address, proto] = value.split('/');
     const url = new URL(
       address.match(/^(http|https)/i) ? address : 'http://' + address,
     );
