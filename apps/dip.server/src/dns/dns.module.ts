@@ -1,13 +1,13 @@
 import { createServer } from 'dns2';
 
-import { Logger, Module } from '@nestjs/common';
+import { CacheModule, Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { DnsService } from './dns.service';
 import { ConfigKeys } from '../base/config.module';
+import { DnsService } from './dns.service';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, CacheModule.register({ max: 1000 })],
   providers: [DnsService],
 })
 export class DnsModule {
@@ -18,14 +18,14 @@ export class DnsModule {
     private readonly configService: ConfigService,
     dnsService: DnsService,
   ) {
-    this.server = createServer({
-      tcp: true,
-      udp: true,
-      doh: true,
-      handle: dnsService.handle,
-    });
-
     const ports = this.preparePorts();
+
+    this.server = createServer({
+      tcp: typeof ports.tcp === 'number',
+      udp: typeof ports.udp === 'number',
+      doh: typeof ports.doh === 'number',
+      handle: dnsService.handle.bind(dnsService),
+    });
 
     this.logger.log(
       `DNS server is listening on ports: ${Object.keys(ports)
@@ -36,14 +36,16 @@ export class DnsModule {
     this.server.listen(ports);
   }
 
-  private preparePorts() {
+  private preparePorts(): { tcp?: number; udp?: number; doh?: number } {
     const ports = {};
 
     const checkAndMerge = (port, name) => port !== -1 && (ports[name] = port);
 
-    checkAndMerge(this.configService.get<number>(ConfigKeys.UDP_PORT), 'udp');
-    checkAndMerge(this.configService.get<number>(ConfigKeys.TCP_PORT), 'tcp');
-    checkAndMerge(this.configService.get<number>(ConfigKeys.DOH_PORT), 'doh');
+    const { configService } = this;
+
+    checkAndMerge(configService.get<number>(ConfigKeys.UDP_PORT), 'udp');
+    checkAndMerge(configService.get<number>(ConfigKeys.TCP_PORT), 'tcp');
+    checkAndMerge(configService.get<number>(ConfigKeys.DOH_PORT), 'doh');
 
     return ports;
   }
