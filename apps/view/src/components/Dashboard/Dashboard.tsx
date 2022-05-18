@@ -1,20 +1,35 @@
 import styled from '@emotion/styled';
-import { Drawer } from '@mui/material';
+import { useState } from 'react';
+import Menu from './Menu/Menu';
 
 const Root = styled.div`
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  display: block;
+  display: flex;
+  display: flexbox;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  flex-direction: row;
+  align-items: stretch;
 `;
 
-const Content = styled.div``;
+const Content = styled.div`
+  height: 100%;
+  flex: 1;
+  padding: 1rem;
+`;
 
 function Dashboard() {
-  console.log('Dashboard rendered');
+  const [openMenu, setOpenMenu] = useState(false);
+
   return (
     <Root>
-      <Drawer variant="persistent"></Drawer>
+      <Menu
+        open={openMenu}
+        onClose={() => setOpenMenu(false)}
+        onOpen={() => setOpenMenu(true)}
+      />
 
       <Content id="main"></Content>
     </Root>

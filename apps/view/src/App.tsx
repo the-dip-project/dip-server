@@ -1,4 +1,4 @@
-import { Outlet, Route, Routes } from 'react-router';
+import { Navigate, Outlet, Route, Routes } from 'react-router';
 
 import AuthGuard from './components/AuthGuard/AuthGuard';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -26,6 +26,7 @@ function App() {
             </>
           }
         >
+          <Route path="" element={<Navigate to="/overview" />} />
           <Route path="overview" element={<OverviewPane />} />
         </Route>
       </Route>
