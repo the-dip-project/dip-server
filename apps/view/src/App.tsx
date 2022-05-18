@@ -5,8 +5,9 @@ import LoginPage from './components/LoginPage/LoginPage';
 function App() {
   return (
     <Routes>
-      <Route path="*" element={<AuthGuard />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route element={<AuthGuard />}>
+        <Route path="/login" element={<LoginPage />} />
+      </Route>
     </Routes>
   );
 }
