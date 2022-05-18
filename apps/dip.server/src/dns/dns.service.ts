@@ -39,7 +39,7 @@ export class DnsService {
 
     await Promise.all(
       questions.map(async (question) => {
-        const cacheKey = `${question.name}-${question.name}`;
+        const cacheKey = `${question.name}-${question['type']}`;
         const cached = await cacheManager.get<DnsAnswer[]>(cacheKey);
 
         if (cached) {
