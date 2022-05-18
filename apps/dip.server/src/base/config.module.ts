@@ -1,5 +1,7 @@
+import { randomBytes } from 'crypto';
+import { existsSync, readFileSync, statSync, writeFileSync } from 'fs';
 import * as Joi from 'joi';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 
 import { Environments } from '@/common/constants/environments';
 import {
@@ -11,6 +13,9 @@ import { ConfigModule } from '@nestjs/config';
 export type Schema = {
   port: number;
   env: Environments;
+  cookie: {
+    secret?: string;
+  };
   data: {
     path: string;
   };
@@ -28,6 +33,19 @@ function defaultDatapath(): string {
     '.dip',
     'data',
   );
+}
+
+function loadCookieSecret(): string {
+  const secretLocation = join(__dirname, 'cookie-secret');
+
+  if (!existsSync(secretLocation) || statSync(secretLocation).isFile()) {
+    const secret = randomBytes(32).toString('utf-8');
+
+    writeFileSync(secretLocation, secret, 'utf-8');
+    return secret;
+  }
+
+  return readFileSync(secretLocation, 'utf-8');
 }
 
 const fallbacks = [];
@@ -48,6 +66,9 @@ function load(): Schema {
   return {
     port: Number(process.env.PORT),
     env,
+    cookie: {
+      secret: env === Environments.PRODUCTION ? loadCookieSecret() : undefined,
+    },
     data: { path: datapath },
     fallbackServers: fallbacks.map(
       ({ host, port: _port, path: _path, proto: _proto }) => {
@@ -131,6 +152,7 @@ const schema = Joi.object({
 export enum ConfigKeys {
   SERVER_PORT = 'port',
   ENVIRONMENT = 'env',
+  COOKIE_SECRET = 'cookie.secret',
   DATAPATH = 'data.path',
   FALLBACKS = 'fallbackServers',
   UDP_PORT = 'ports.udp',
