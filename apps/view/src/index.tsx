@@ -1,6 +1,16 @@
-import 'react';
+import React from 'react';
 
 import { render } from 'react-dom';
-import App from './App';
+import { Provider } from 'react-redux';
 
-render(<App />, document.getElementById('root'));
+import App from './App';
+import store from './store/store';
+
+render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById('root'),
+);
