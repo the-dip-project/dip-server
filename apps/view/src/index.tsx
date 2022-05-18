@@ -1,4 +1,4 @@
-import { CssBaseline } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
@@ -11,9 +11,11 @@ render(
   <React.StrictMode>
     <CssBaseline />
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <ThemeProvider theme={createTheme()}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),
