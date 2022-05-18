@@ -4,6 +4,7 @@
     "declaration": false,
     "outDir": "../../dist/apps/dip.server"
   },
+  "files": ["src/global.d.ts"],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }
