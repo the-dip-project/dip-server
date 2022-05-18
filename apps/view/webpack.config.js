@@ -3,6 +3,7 @@
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const { join, resolve } = require('path');
+const { hostname } = require('os');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const tsConfig = require('./tsconfig.app.json');
 const dependencies = require('../../package.json').dependencies;
@@ -25,6 +26,9 @@ const html = new HtmlWebpackPlugin({
   minify: !isDev,
   templateParameters: {
     dependencies: isDev ? [] : prodDependencies,
+    serverInfo: {
+      server: hostname(),
+    },
   },
 });
 

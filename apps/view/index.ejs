@@ -12,6 +12,9 @@
 </head>
 
 <body>
+    <script>
+        window.__SERVER_DATA__ = <%= JSON.stringify(serverInfo) %>;
+    </script>
     <noscript>This application requires javascript.</noscript>
     <div id="root"></div>
 </body>
