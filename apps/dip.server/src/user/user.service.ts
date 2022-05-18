@@ -1,6 +1,7 @@
 import { Cache } from 'cache-manager';
 import { createHash, randomBytes } from 'crypto';
 import { sign } from 'jsonwebtoken';
+import _omit from 'lodash/omit';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
 
@@ -8,6 +9,7 @@ import { UserEntity } from '@/common/entities';
 import { generateAnswer } from '@/common/helpers/generate-answer';
 import { randomString } from '@/common/helpers/random-string';
 import { LoginChallenge } from '@/common/models/login-challenge';
+import { PublicUser } from '@/common/models/public-user';
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -93,5 +95,9 @@ export class UserService {
         creationDate: Date.now(),
       })
     ).generatedMaps[0] as UserEntity;
+  }
+
+  public reduceUser(user: UserEntity): PublicUser {
+    return _omit(user, 'secret', 'password');
   }
 }

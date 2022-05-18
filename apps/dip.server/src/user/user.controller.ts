@@ -3,20 +3,27 @@ import { Response } from 'express';
 import { CookieEntries } from '@/common/constants/cookie-entries';
 import { Environments } from '@/common/constants/environments';
 import { Cookies } from '@/common/decorators/cookies';
+import { CurrentUser } from '@/common/decorators/current-user';
+import { UserEntity } from '@/common/entities';
 import { byHours } from '@/common/helpers/timespan';
 import { ResponseDTO } from '@/common/models/dto/response.dto';
 import { GetQuestionQueryDTO } from '@/common/models/dto/user/get-question.query.dto';
+import { GetUserParamDTO } from '@/common/models/dto/user/get-user.param.dto';
 import { LoginBodyDTO } from '@/common/models/dto/user/login.body.dto';
+import { PublicUser } from '@/common/models/public-user';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   HttpStatus,
   NotAcceptableException,
   NotFoundException,
+  Param,
   Post,
   Query,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -72,5 +79,38 @@ export class UserController {
       case AnswerValidationErrors.INVALID:
         throw new NotAcceptableException('Invalid or wrong answer');
     }
+  }
+
+  @Get('/:userId')
+  public async getUser(
+    @Param() { userId: _userId }: GetUserParamDTO,
+    @CurrentUser() user: UserEntity,
+  ): Promise<ResponseDTO<PublicUser>> {
+    if (!user)
+      throw new UnauthorizedException(
+        'This action requires authenticated access',
+      );
+
+    if (_userId === 'me')
+      return new ResponseDTO(
+        HttpStatus.OK,
+        [],
+        this.userService.reduceUser(user),
+      );
+
+    if (_userId.match(/\D/))
+      throw new BadRequestException([
+        'userId can be either',
+        '"me" or a number',
+        '"me" is a shortcut for the current user',
+      ]);
+
+    const userId = parseInt(_userId, 10);
+
+    return new ResponseDTO(
+      HttpStatus.OK,
+      [],
+      this.userService.reduceUser(await this.userService.getUserById(userId)),
+    );
   }
 }
