@@ -10,6 +10,7 @@ import {
 } from './components/Dashboard/OverviewPane';
 import { route as profileRoute } from './components/Dashboard/ProfilePane';
 import LoginPage from './components/LoginPage/LoginPage';
+import NotFound from './components/NotFound/NotFound';
 
 function App() {
   return (
@@ -37,6 +38,8 @@ function App() {
           {managerRoute}
           {profileRoute}
           {adminUtilsRoute}
+
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Route>
     </Routes>
