@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { DomainEntity } from './domain.entity';
 
 @Entity('Record')
 export class RecordEntity {
@@ -22,4 +30,16 @@ export class RecordEntity {
 
   @Column('text', { name: 'extended_data', nullable: true })
   extendedData!: string;
+
+  @Column('int', { name: 'domain_id', nullable: false })
+  domainId!: number;
+
+  @ManyToOne((_type) => DomainEntity, (domain) => domain.id, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn({ name: 'domain_id', referencedColumnName: 'id' })
+  domain!: DomainEntity;
 }
