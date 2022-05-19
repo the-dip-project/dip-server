@@ -89,6 +89,9 @@ const useStyles = makeStyles((theme: Theme) => ({
       background: '#555',
     },
   },
+  item: {
+    color: '#3c3c3c',
+  },
 }));
 
 const connector = connect(
@@ -140,6 +143,7 @@ function Menu({
         {items.map((item) => (
           <ListItemButton
             key={`menu#${item.path}`}
+            className={classes.item}
             alignItems="center"
             selected={
               location.pathname === item.path ||
