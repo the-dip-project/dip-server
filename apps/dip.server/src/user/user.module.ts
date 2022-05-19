@@ -2,18 +2,10 @@ import { Repository } from 'typeorm';
 
 import { UserEntity } from '@/common/entities';
 import { byMinutes } from '@/common/helpers/timespan';
-import {
-  CacheModule,
-  Logger,
-  MiddlewareConsumer,
-  Module,
-  RequestMethod,
-} from '@nestjs/common';
+import { CacheModule, Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 
-import { AuthGuardMiddleware } from '../auth-guard/auth-guard.middleware';
-import { AuthGuardModule } from '../auth-guard/auth-guard.module';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
@@ -22,7 +14,6 @@ import { UserService } from './user.service';
     ConfigModule,
     TypeOrmModule.forFeature([UserEntity]),
     CacheModule.register({ ttl: byMinutes(2) }),
-    AuthGuardModule,
   ],
   providers: [UserService],
   controllers: [UserController],
@@ -54,15 +45,5 @@ export class UserModule {
 
       this.logger.log('Root user created with id: ' + id);
     }
-  }
-
-  public configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthGuardMiddleware)
-      .exclude({ path: '/api/user/login', method: RequestMethod.ALL })
-      .forRoutes(
-        { path: '/api/user', method: RequestMethod.ALL },
-        { path: '/api/user/*', method: RequestMethod.ALL },
-      );
   }
 }

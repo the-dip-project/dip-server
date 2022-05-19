@@ -1,6 +1,7 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { AuthGuardModule } from './auth-guard/auth-guard.module';
 import configModule, { ConfigKeys } from './base/config.module';
 import typeOrmModule from './base/type-orm.module';
 import { DnsModule } from './dns/dns.module';
@@ -13,6 +14,7 @@ import { ViewModule } from './view/view.module';
     configModule,
     typeOrmModule,
     ViewModule,
+    AuthGuardModule,
     DnsModule,
     UserModule,
     DomainModule,
