@@ -4,11 +4,19 @@ import { ConfigService } from '@nestjs/config';
 import configModule, { ConfigKeys } from './base/config.module';
 import typeOrmModule from './base/type-orm.module';
 import { DnsModule } from './dns/dns.module';
+import { DomainModule } from './domain/domain.module';
 import { UserModule } from './user/user.module';
 import { ViewModule } from './view/view.module';
 
 @Module({
-  imports: [configModule, typeOrmModule, ViewModule, DnsModule, UserModule],
+  imports: [
+    configModule,
+    typeOrmModule,
+    ViewModule,
+    DnsModule,
+    UserModule,
+    DomainModule,
+  ],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);
