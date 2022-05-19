@@ -76,6 +76,8 @@ function LoginForm() {
     if (loggingIn) return;
     setLoggingIn(true);
 
+    let navigated = false;
+
     await (async () => {
       const { target: form } = event;
       const {
@@ -115,9 +117,10 @@ function LoginForm() {
       }
 
       navigate('/');
+      navigated = true;
     })();
 
-    setLoggingIn(false);
+    if (!navigated) setLoggingIn(false);
   };
 
   return (
