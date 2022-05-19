@@ -5,8 +5,8 @@ export class RecordEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
   id!: number;
 
-  @Column('text', { name: 'name', nullable: false })
-  name!: string;
+  @Column('text', { name: 'host', nullable: false })
+  host!: string;
 
   @Column('int', { name: 'ttl', nullable: false })
   ttl!: number;
