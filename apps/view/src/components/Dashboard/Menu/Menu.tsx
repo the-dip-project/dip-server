@@ -1,6 +1,13 @@
+import clsx from 'clsx';
+import { useMemo } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router';
+
+import NowrapTypo from '@/view/common/components/NowrapTypo';
 import TransparentAvatar from '@/view/common/components/TransparentAvatar';
 import { useBreakpoints } from '@/view/hooks/useBreakpoints';
-import { ChevronLeft, ChevronRight, Speed } from '@mui/icons-material';
+import { ApplicationState } from '@/view/store';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import {
   Divider,
   Drawer,
@@ -11,11 +18,11 @@ import {
   Theme,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import clsx from 'clsx';
-import { useLocation } from 'react-router';
+
+import { PaneRegister } from '../Panes';
 import UserInfo from './UserInfo/UserInfo';
 
-export const menuFullWidth = 260;
+export const menuFullWidth = 300;
 
 interface IProps {
   open: boolean;
@@ -84,10 +91,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-function Menu({ open, onClose, onOpen }: IProps) {
+const connector = connect(
+  (state: ApplicationState) => ({
+    role: state.app.user?.role,
+  }),
+  {},
+);
+
+function Menu({
+  open,
+  onClose,
+  onOpen,
+  role,
+}: IProps & ConnectedProps<typeof connector>) {
   const classes = useStyles();
   const checker = useBreakpoints();
   const location = useLocation();
+  const navigate = useNavigate();
+  const items = useMemo(
+    () =>
+      [...PaneRegister.getInstance().getAll()].sort(
+        (i1, i2) => i1.order - i2.order,
+      ),
+    [PaneRegister.getInstance().getAll()],
+  );
 
   return (
     <Drawer
@@ -110,21 +137,33 @@ function Menu({ open, onClose, onOpen }: IProps) {
       <Divider />
 
       <List className={classes.list}>
-        <ListItemButton
-          alignItems="center"
-          selected={location.pathname.startsWith('/overview')}
-        >
-          <ListItemAvatar>
-            <TransparentAvatar>
-              <Speed />
-            </TransparentAvatar>
-          </ListItemAvatar>
+        {items.map((item) => (
+          <ListItemButton
+            key={`menu#${item.path}`}
+            alignItems="center"
+            selected={
+              location.pathname === item.path ||
+              location.pathname.startsWith(item.path + '/')
+            }
+            onClick={() => navigate(item.path)}
+            disabled={role > item.minPrivilege}
+          >
+            <ListItemAvatar>
+              <TransparentAvatar>{item.icon}</TransparentAvatar>
+            </ListItemAvatar>
 
-          <ListItemText
-            primary="Overview"
-            primaryTypographyProps={{ fontWeight: 'bold' }}
-          />
-        </ListItemButton>
+            <ListItemText
+              primary={<NowrapTypo fontWeight="bold">{item.label}</NowrapTypo>}
+              secondary={
+                role > item.minPrivilege ? (
+                  <NowrapTypo variant="caption">
+                    This feature requires higher privilege
+                  </NowrapTypo>
+                ) : undefined
+              }
+            />
+          </ListItemButton>
+        ))}
       </List>
 
       <Divider />
@@ -134,4 +173,4 @@ function Menu({ open, onClose, onOpen }: IProps) {
   );
 }
 
-export default Menu;
+export default connector(Menu);

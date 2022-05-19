@@ -1,24 +1,24 @@
 import { useSelector } from '@/view/hooks/useSelector';
-import { Speed } from '@mui/icons-material';
+import { ManageAccounts } from '@mui/icons-material';
 import { Portal } from '@mui/material';
 
 import { IMenuEntry } from '../IMenuEntry';
 import { PaneRegister } from '../Panes';
 
 export const meta: IMenuEntry = {
-  order: 1,
-  icon: <Speed />,
-  label: 'Overview',
-  path: '/overview',
+  order: 3,
+  icon: <ManageAccounts />,
+  label: 'Edit profile',
+  path: '/profile',
   minPrivilege: Number.MAX_SAFE_INTEGER,
 };
 
 PaneRegister.getInstance().register(meta);
 
-function OverviewPane() {
+function ProfilePane() {
   const container = useSelector('#main')[0];
 
-  return <Portal container={container}>Overview</Portal>;
+  return <Portal container={container}>Profile</Portal>;
 }
 
-export default OverviewPane;
+export default ProfilePane;
