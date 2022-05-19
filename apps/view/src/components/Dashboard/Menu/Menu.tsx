@@ -35,9 +35,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     [theme.breakpoints.down('md')]: {
       height: '100vh',
       width: '100vw',
+      position: 'fixed',
     },
-    [theme.breakpoints.between(menuFullWidth, 'md')]: {},
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up(theme.breakpoints.values.md + 1)]: {
       position: 'relative',
       height: '100%',
     },
@@ -165,6 +165,7 @@ function Menu({
                   </NowrapTypo>
                 ) : undefined
               }
+              inset
             />
           </ListItemButton>
         ))}
