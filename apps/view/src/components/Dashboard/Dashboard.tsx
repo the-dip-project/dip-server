@@ -25,6 +25,7 @@ const Container = styled(Flexbox)`
 const Content = styled.div`
   height: 100%;
   flex: 1;
+  overflow: hidden;
   background-color: #f3f4f5;
 `;
 
