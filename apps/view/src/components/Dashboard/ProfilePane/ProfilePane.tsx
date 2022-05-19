@@ -20,7 +20,6 @@ PaneRegister.getInstance().register(meta);
 
 const Root = styled.div`
   padding: 2rem;
-  background-color: #f3f4f5;
   width: 100%;
   height: 100%;
   overflow-y: auto;
