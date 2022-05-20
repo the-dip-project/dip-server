@@ -1,3 +1,7 @@
-import { GetDomainParamDTO } from './get-domain.param.dto';
+import { IsFQDN, IsString } from 'class-validator';
 
-export class RegisterDomainBodyDTO extends GetDomainParamDTO {}
+export class RegisterDomainBodyDTO {
+  @IsFQDN()
+  @IsString()
+  domain!: string;
+}

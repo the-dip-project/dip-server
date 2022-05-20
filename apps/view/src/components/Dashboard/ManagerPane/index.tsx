@@ -4,7 +4,7 @@ import ManagerPane, { meta } from './ManagerPane';
 
 export const route = (
   <Route path={meta.path.replace(/^\//, '')} element={<ManagerPane />}>
-    <Route path=":domain" element={<ManagerPane />} />
+    <Route path=":domainId" element={<ManagerPane />} />
   </Route>
 );
 

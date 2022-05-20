@@ -91,7 +91,7 @@ function DomainAdder({
     }
 
     const { statusCode }: ResponseDTO<unknown> = await fetch(
-      `/api/domain/${domain}`,
+      `/api/domain?domain=${domain}`,
     ).then((res) => res.json());
 
     switch (statusCode) {

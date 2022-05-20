@@ -30,7 +30,7 @@ function DomainsItem({ domain, selected, onSelectionChanged }: IProps) {
         />
       </TableCell>
       <TableCell>
-        <Link to={domain.domain}>{domain.domain}</Link>
+        <Link to={`${domain.id}#${domain.domain}`}>{domain.domain}</Link>
       </TableCell>
       <TableCell>
         <NowrapTypo variant="body2">{timeString}</NowrapTypo>

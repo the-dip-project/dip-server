@@ -19,6 +19,7 @@ import {
 
 import DomainAdder from './DomainAdder/DomainAdder';
 import DomainsItem from './DomainsItem/DomainsItem';
+import clsx from 'clsx';
 
 const Root = styled(Paper)`
   padding: 1rem 1rem;
@@ -67,18 +68,18 @@ const connector = connect(
 );
 
 function DomainsList({ domains }: ConnectedProps<typeof connector>) {
-  const { domain } = useParams();
+  const { domainId } = useParams();
   const [selections, setSelections] = useState(new Set<number>());
 
   return (
     <>
-      <Root className={domain ? 'hide' : ''}>
+      <Root className={clsx({ hide: !!domainId })}>
         <DomainAdder />
       </Root>
 
       <br />
 
-      <Root className={domain ? 'hide' : ''}>
+      <Root className={clsx({ hide: !!domainId })}>
         <Overhead>
           <Button size="small" variant="contained" color="error">
             <Delete />

@@ -25,6 +25,12 @@ export class DomainService {
     });
   }
 
+  public async getDomainById(domainId: number): Promise<DomainEntity> {
+    return this.domainRepository.findOne({
+      where: { id: domainId },
+    });
+  }
+
   public async getDomainByName(domain: string): Promise<DomainEntity> {
     return this.domainRepository.findOne({
       where: { domain },

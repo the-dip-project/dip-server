@@ -1,7 +1,9 @@
-import { IsFQDN, IsString } from 'class-validator';
+import { IsNumber, Min } from 'class-validator';
 
 export class GetDomainParamDTO {
-  @IsFQDN()
-  @IsString()
-  domain!: string;
+  @Min(1, {
+    message: 'domainId must be greater than 0',
+  })
+  @IsNumber()
+  domainId!: number;
 }
