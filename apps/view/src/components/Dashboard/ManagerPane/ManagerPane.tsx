@@ -3,7 +3,6 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import NowrapTypo from '@/view/common/components/NowrapTypo';
 import { useSelector } from '@/view/hooks/useSelector';
-import { ApplicationState } from '@/view/store';
 import { loadDomains } from '@/view/store/actions/loader/loadDomains';
 import styled from '@emotion/styled';
 import { Dns } from '@mui/icons-material';
@@ -29,25 +28,17 @@ const Root = styled.div`
   padding: 2rem;
 `;
 
-const connector = connect(
-  (state: ApplicationState) => ({
-    domain: state.domain.domain,
-  }),
-  {
-    loadDomains,
-  },
-);
-
-function ManagerPane({
-  domain,
+const connector = connect(() => ({}), {
   loadDomains,
-}: ConnectedProps<typeof connector>) {
-  const container = useSelector('#main')[0];
-  const { domainId } = useParams();
+});
 
-  const domainPath = domainId ? (
+function ManagerPane({ loadDomains }: ConnectedProps<typeof connector>) {
+  const container = useSelector('#main')[0];
+  const { domain } = useParams();
+
+  const domainPath = domain ? (
     <>
-      &nbsp;/&nbsp;<b>{domain?.domain}</b>
+      &nbsp;/&nbsp;<b>{domain}</b>
     </>
   ) : (
     ''

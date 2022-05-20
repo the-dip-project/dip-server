@@ -68,18 +68,18 @@ const connector = connect(
 );
 
 function DomainsList({ domains }: ConnectedProps<typeof connector>) {
-  const { domainId } = useParams();
+  const { domain: name } = useParams();
   const [selections, setSelections] = useState(new Set<number>());
 
   return (
     <>
-      <Root className={clsx({ hide: !!domainId })}>
+      <Root className={clsx({ hide: !!name })}>
         <DomainAdder />
       </Root>
 
       <br />
 
-      <Root className={clsx({ hide: !!domainId })}>
+      <Root className={clsx({ hide: !!name })}>
         <Overhead>
           <Button size="small" variant="contained" color="error">
             <Delete />

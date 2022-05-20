@@ -13,19 +13,19 @@ export enum LoadDomainResult {
 }
 
 export function loadDomain(
-  domainId: number,
+  domain: string,
 ): AppThunkAction<
   Action<DomainEntity> | AppThunkAction<unknown>,
   LoadDomainResult
 > {
   return async (dispatch) => {
     const { statusCode, body, message }: ResponseDTO<DomainEntity> =
-      await fetch(`/api/domain/${domainId}`).then((res) => res.json());
+      await fetch(`/api/domain?domain=${domain}`).then((res) => res.json());
 
     switch (statusCode) {
       case HttpStatus.INTERNAL_SERVER_ERROR:
         console.error(
-          `Error while loading domain #${domainId}: ${
+          `Error while loading domain ${domain}: ${
             typeof message === 'string' ? message : message.join(', ')
           }`,
         );

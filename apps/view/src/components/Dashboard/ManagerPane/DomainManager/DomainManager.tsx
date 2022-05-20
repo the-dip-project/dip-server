@@ -13,7 +13,10 @@ import {
 import styled from '@emotion/styled';
 import { Paper, Typography } from '@mui/material';
 import { NotificationSeverity } from '@/view/common/types/Notification';
-import { loadRecords } from '@/view/store/actions/loader/loadRecords';
+import {
+  loadRecords,
+  LoadRecordsResult,
+} from '@/view/store/actions/loader/loadRecords';
 
 const RootPaper = styled(Paper)`
   padding: 1rem 1rem;
@@ -42,17 +45,13 @@ function DomainManager({
   loadRecords,
 }: ConnectedProps<typeof connector>) {
   const navigate = useNavigate();
-  const { domainId: _domainId } = useParams();
+  const { domain: name } = useParams();
 
   useEffect(() => {
     (async () => {
-      if (!_domainId) return;
+      if (!name) return;
 
-      const domainId = Number(_domainId);
-
-      if (Number.isNaN(domainId)) return navigate('/manage');
-
-      const loadDomainResult = await loadDomain(Number(domainId));
+      const loadDomainResult = await loadDomain(name);
 
       switch (loadDomainResult) {
         case LoadDomainResult.CAN_NOT_ACCESS:
@@ -74,19 +73,30 @@ function DomainManager({
           break;
       }
     })();
-  }, [_domainId]);
+  }, [name]);
 
   useEffect(() => {
     if (!domain) return;
 
     (async () => {
       const loadRecordsResult = await loadRecords(domain.id);
+
+      switch (loadRecordsResult) {
+        case LoadRecordsResult.INTERNAL_SERVER_ERROR:
+          return notify('Internal server error', NotificationSeverity.ERROR);
+
+        case LoadRecordsResult.LOGGED_OUT:
+          return navigate('/login');
+
+        default:
+          break;
+      }
     })();
   }, [domain]);
 
   return (
     <>
-      <RootPaper className={clsx({ hide: !_domainId })}>
+      <RootPaper className={clsx({ hide: !name })}>
         <Typography variant="h6">
           Created at&nbsp;
           {new Date(domain?.creationDate).toLocaleString('en-US', {
