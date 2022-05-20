@@ -1,8 +1,17 @@
 import { CurrentUser } from '@/common/decorators/current-user';
-import { UserEntity } from '@/common/entities';
+import { DomainEntity, UserEntity } from '@/common/entities';
 import { DomainListItem } from '@/common/models/domain-list-item';
+import { GetDomainParamDTO } from '@/common/models/dto/domain/get-domain.param.dto';
 import { ResponseDTO } from '@/common/models/dto/response.dto';
-import { Controller, Get, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  ForbiddenException,
+  Get,
+  HttpStatus,
+  NotFoundException,
+  Param,
+} from '@nestjs/common';
+
 import { DomainService } from './domain.service';
 
 @Controller('/api/domain')
@@ -27,5 +36,19 @@ export class DomainController {
     }
 
     return new ResponseDTO(HttpStatus.OK, [], result);
+  }
+
+  @Get(':domain')
+  public async getDomain(
+    @CurrentUser() user: UserEntity,
+    @Param() { domain }: GetDomainParamDTO,
+  ): Promise<ResponseDTO<DomainEntity>> {
+    const storedDomain = await this.domainService.getDomainByName(domain);
+
+    if (!storedDomain) throw new NotFoundException('domain does not exist');
+    if (storedDomain.ownerId !== user.id)
+      throw new ForbiddenException('domain belongs to another user');
+
+    return new ResponseDTO(HttpStatus.OK, [], storedDomain);
   }
 }
