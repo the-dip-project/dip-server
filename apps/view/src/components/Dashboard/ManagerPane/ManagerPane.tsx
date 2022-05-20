@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { useParams } from 'react-router';
 
 import NowrapTypo from '@/view/common/components/NowrapTypo';
 import { useSelector } from '@/view/hooks/useSelector';
+import { ApplicationState } from '@/view/store';
 import { loadDomains } from '@/view/store/actions/loader/loadDomains';
 import styled from '@emotion/styled';
 import { Dns } from '@mui/icons-material';
@@ -13,6 +13,7 @@ import { IMenuEntry } from '../IMenuEntry';
 import { PaneRegister } from '../Panes';
 import DomainManager from './DomainManager/DomainManager';
 import DomainsList from './DomainsList/DomainsList';
+import { useParams } from 'react-router';
 
 export const meta: IMenuEntry = {
   order: 2,
@@ -28,17 +29,25 @@ const Root = styled.div`
   padding: 2rem;
 `;
 
-const connector = connect(() => ({}), {
+const connector = connect(
+  (state: ApplicationState) => ({
+    domain: state.domain.domain,
+  }),
+  {
+    loadDomains,
+  },
+);
+
+function ManagerPane({
+  domain,
   loadDomains,
-});
-
-function ManagerPane({ loadDomains }: ConnectedProps<typeof connector>) {
+}: ConnectedProps<typeof connector>) {
   const container = useSelector('#main')[0];
-  const { domain } = useParams();
+  const { domainId } = useParams();
 
-  const domainPath = domain ? (
+  const domainPath = domainId ? (
     <>
-      &nbsp;/&nbsp;<b>{domain}</b>
+      &nbsp;/&nbsp;<b>{domain?.domain}</b>
     </>
   ) : (
     ''
