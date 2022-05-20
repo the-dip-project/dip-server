@@ -114,13 +114,13 @@ function DomainManager({
 
       <br />
 
-      <RootPaper>
+      <RootPaper className={clsx({ hide: !name })}>
         <RecordAdder />
       </RootPaper>
 
       <br />
 
-      <RootPaper>
+      <RootPaper className={clsx({ hide: !name })}>
         <RecordsList />
       </RootPaper>
     </>
