@@ -53,7 +53,7 @@ export class DomainController {
 
     if (!storedDomain) throw new NotFoundException('domain does not exist');
     if (storedDomain.ownerId !== user.id)
-      throw new ForbiddenException('domain belongs to another user');
+      throw new ForbiddenException('domain belongs to other user');
 
     return new ResponseDTO(HttpStatus.OK, [], storedDomain);
   }
