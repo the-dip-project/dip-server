@@ -11,7 +11,12 @@ import domain from './reducers/domain';
 const store = configureStore({
   ..._merge({ reducer: {}, preloadedState: {} }, app, domain, confirm),
   middleware(getDefaultMiddleware) {
-    return [...getDefaultMiddleware(), thunk];
+    return [
+      ...getDefaultMiddleware({
+        serializableCheck: false,
+      }),
+      thunk,
+    ];
   },
   devTools: process.env.NODE_ENV === 'development',
 });
