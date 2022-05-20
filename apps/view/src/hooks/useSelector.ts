@@ -7,13 +7,23 @@ export function useSelector(
   const [nodes, setNodes] = useState([] as Element[]);
 
   useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setNodes([...root.querySelectorAll(selector)]);
+    const observer = new MutationObserver((list) => {
+      let hasChange = false;
+
+      for (const change of list) {
+        const target = change.target as Element;
+
+        if (target.matches(selector) || target.querySelector(selector)) {
+          hasChange = true;
+          break;
+        }
+      }
+
+      if (hasChange) setNodes([...root.querySelectorAll(selector)]);
     });
 
     observer.observe(root, {
       childList: true,
-      subtree: true,
     });
 
     setNodes([...root.querySelectorAll(selector)]);
