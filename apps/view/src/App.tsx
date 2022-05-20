@@ -10,7 +10,9 @@ import {
 } from './components/Dashboard/OverviewPane';
 import { route as profileRoute } from './components/Dashboard/ProfilePane';
 import LoginPage from './components/LoginPage/LoginPage';
+import MasterDialog from './components/MasterDialog/MasterDialog';
 import NotFound from './components/NotFound/NotFound';
+import Notificator from './components/Notifcator/Notificator';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         element={
           <>
             <AuthGuard />
+            <MasterDialog />
+            <Notificator />
             <Outlet />
           </>
         }
