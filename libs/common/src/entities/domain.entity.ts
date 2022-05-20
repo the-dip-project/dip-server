@@ -1,5 +1,7 @@
+import { Exclude } from 'class-transformer';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -23,6 +25,7 @@ export class DomainEntity {
   @Column('int', { name: 'owner_id', nullable: false })
   ownerId!: number;
 
+  @Exclude()
   @ManyToOne((_type) => UserEntity, (user) => user.id, {
     eager: true,
     cascade: true,
@@ -35,6 +38,6 @@ export class DomainEntity {
   })
   owner: UserEntity;
 
-  @Column('datetime', { name: 'creation_date', nullable: false })
+  @CreateDateColumn({ name: 'creation_date', nullable: false })
   creationDate!: Date;
 }
