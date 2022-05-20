@@ -1,7 +1,7 @@
-import { IsString, Length } from 'class-validator';
+import { IsFQDN, IsString } from 'class-validator';
 
 export class GetDomainParamDTO {
-  @Length(4, 253)
+  @IsFQDN()
   @IsString()
   domain!: string;
 }
