@@ -17,6 +17,9 @@ import {
 import styled from '@emotion/styled';
 import { Paper, Typography } from '@mui/material';
 
+import RecordAdder from './RecordAdder/RecordAdder';
+import RecordsList from './RecordsList/RecordsList';
+
 const RootPaper = styled(Paper)`
   padding: 1rem 1rem;
   &.hide {
@@ -111,11 +114,15 @@ function DomainManager({
 
       <br />
 
-      <RootPaper>adder</RootPaper>
+      <RootPaper>
+        <RecordAdder />
+      </RootPaper>
 
       <br />
 
-      <RootPaper>records list</RootPaper>
+      <RootPaper>
+        <RecordsList />
+      </RootPaper>
     </>
   );
 }
