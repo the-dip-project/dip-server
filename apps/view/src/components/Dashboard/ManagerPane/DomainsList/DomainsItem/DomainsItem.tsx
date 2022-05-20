@@ -35,7 +35,7 @@ function DomainsItem({ domain, selected, onSelectionChanged }: IProps) {
       <TableCell>
         <NowrapTypo variant="body2">{timeString}</NowrapTypo>
       </TableCell>
-      <TableCell>{domain.records}</TableCell>
+      <TableCell align="center">{domain.records}</TableCell>
     </TableRow>
   );
 }
