@@ -5,6 +5,8 @@ export enum ActionTypes {
   APP__OPEN_DIALOG = 0x03,
 
   DOMAIN__SET_DOMAINS = 0x10,
+  DOMAIN__SET_DOMAIN = 0x11,
+  DOMAIN__SET_RECORDS = 0x12,
 
   CONFIRM__SET_CALLBACK = 0x20,
 }
