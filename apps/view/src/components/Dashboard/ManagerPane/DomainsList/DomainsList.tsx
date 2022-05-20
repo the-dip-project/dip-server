@@ -97,6 +97,10 @@ function DomainsList({ domains }: ConnectedProps<typeof connector>) {
                       selections.size !== 0 &&
                       selections.size === domains.length
                     }
+                    indeterminate={
+                      selections.size !== 0 &&
+                      selections.size !== domains.length
+                    }
                     onChange={(e) =>
                       e.target.checked
                         ? setSelections(
