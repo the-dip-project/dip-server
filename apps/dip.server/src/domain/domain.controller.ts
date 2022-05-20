@@ -21,7 +21,7 @@ export class DomainController {
       result.push({
         id: domain.id,
         domain: domain.domain,
-        creationDate: domain.creationDate,
+        creationDate: domain.creationDate.getTime(),
         records: await this.domainService.getRecordsCountByDomainId(domain.id),
       });
     }
