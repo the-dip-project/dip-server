@@ -165,7 +165,6 @@ function Menu({
                   </NowrapTypo>
                 ) : undefined
               }
-              inset
             />
           </ListItemButton>
         ))}
