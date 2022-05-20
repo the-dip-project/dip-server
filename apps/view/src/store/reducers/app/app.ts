@@ -30,6 +30,9 @@ export function reduce(state = initialState, action: AnyAction): AppState {
     case ActionTypes.APP__NOTIFY:
       return { ...state, notification: { open: true, ...action.payload } };
 
+    case ActionTypes.APP__HIDE_NOTIFICATION:
+      return { ...state, notification: { ...state.notification, open: false } };
+
     default:
       return state;
   }
