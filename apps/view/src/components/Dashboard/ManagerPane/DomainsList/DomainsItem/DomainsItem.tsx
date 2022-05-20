@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import { DomainListItem } from '@/common/models/domain-list-item';
+import NowrapTypo from '@/view/common/components/NowrapTypo';
 import { Checkbox, TableCell, TableRow } from '@mui/material';
 
 interface IProps {
@@ -31,7 +32,9 @@ function DomainsItem({ domain, selected, onSelectionChanged }: IProps) {
       <TableCell>
         <Link to={domain.domain}>{domain.domain}</Link>
       </TableCell>
-      <TableCell>{timeString}</TableCell>
+      <TableCell>
+        <NowrapTypo variant="body2">{timeString}</NowrapTypo>
+      </TableCell>
       <TableCell>{domain.records}</TableCell>
     </TableRow>
   );
