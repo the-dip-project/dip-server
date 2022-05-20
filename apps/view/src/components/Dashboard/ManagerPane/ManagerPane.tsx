@@ -2,15 +2,12 @@ import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
 
-import { DomainListItem } from '@/common/models/domain-list-item';
-import { ResponseDTO } from '@/common/models/dto/response.dto';
 import NowrapTypo from '@/view/common/components/NowrapTypo';
 import { useSelector } from '@/view/hooks/useSelector';
-import { setDomains } from '@/view/store/actions/domain/setDomains';
+import { loadDomains } from '@/view/store/actions/loader/loadDomains';
 import styled from '@emotion/styled';
 import { Dns } from '@mui/icons-material';
 import { Divider, Portal } from '@mui/material';
-import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 
 import { IMenuEntry } from '../IMenuEntry';
 import { PaneRegister } from '../Panes';
@@ -31,9 +28,11 @@ const Root = styled.div`
   padding: 2rem;
 `;
 
-const connector = connect(() => ({}), { setDomains });
+const connector = connect(() => ({}), {
+  loadDomains,
+});
 
-function ManagerPane({ setDomains }: ConnectedProps<typeof connector>) {
+function ManagerPane({ loadDomains }: ConnectedProps<typeof connector>) {
   const container = useSelector('#main')[0];
   const { domain } = useParams();
 
@@ -46,13 +45,7 @@ function ManagerPane({ setDomains }: ConnectedProps<typeof connector>) {
   );
 
   useEffect(() => {
-    (async () => {
-      const { statusCode, body } = (await fetch('/api/domain').then((res) =>
-        res.json(),
-      )) as ResponseDTO<DomainListItem[]>;
-
-      if (statusCode === HttpStatus.OK) setDomains(body);
-    })();
+    loadDomains();
   }, []);
 
   return (

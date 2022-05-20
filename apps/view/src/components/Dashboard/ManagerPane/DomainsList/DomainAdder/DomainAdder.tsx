@@ -1,9 +1,14 @@
 import Joi from 'joi';
 import _debounce from 'lodash/debounce';
 import { useState } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
+import { DomainEntity } from '@/common/entities';
 import { bySeconds } from '@/common/helpers/timespan';
 import { ResponseDTO } from '@/common/models/dto/response.dto';
+import { NotificationSeverity } from '@/view/common/types/Notification';
+import { notify } from '@/view/store/actions/app/notify';
+import { loadDomains } from '@/view/store/actions/loader/loadDomains';
 import { AppRegistration } from '@mui/icons-material';
 import {
   CircularProgress,
@@ -16,7 +21,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
-import { DomainEntity } from '@/common/entities';
 
 const ColoredFormHelperText = styled(FormHelperText)(({ theme }) => ({
   fontWeight: 500,
@@ -42,7 +46,15 @@ const colors = {
   [MessageTypes.ERROR]: 'error',
 };
 
-function DomainAdder() {
+const connector = connect(() => ({}), {
+  loadDomains,
+  notify,
+});
+
+function DomainAdder({
+  loadDomains,
+  notify,
+}: ConnectedProps<typeof connector>) {
   const [checking, setChecking] = useState(false);
   const [message, setMessage] = useState({
     type: MessageTypes.DEFAULT,
@@ -115,8 +127,9 @@ function DomainAdder() {
 
     if (validation.error) return;
 
-    const { statusCode, message, body }: ResponseDTO<DomainEntity> =
-      await fetch(`/api/domain`, {
+    const { statusCode, message }: ResponseDTO<DomainEntity> = await fetch(
+      `/api/domain`,
+      {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,9 +137,22 @@ function DomainAdder() {
         body: JSON.stringify({
           domain,
         }),
-      }).then((res) => res.json());
+      },
+    ).then((res) => res.json());
 
-    console.log(statusCode, message, body);
+    switch (statusCode) {
+      case HttpStatus.INTERNAL_SERVER_ERROR:
+        notify(
+          typeof message === 'string' ? message : message.join(', '),
+          NotificationSeverity.ERROR,
+        );
+        return;
+
+      default:
+        break;
+    }
+
+    loadDomains();
   };
 
   return (
@@ -157,4 +183,4 @@ function DomainAdder() {
   );
 }
 
-export default DomainAdder;
+export default connector(DomainAdder);

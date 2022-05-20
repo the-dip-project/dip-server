@@ -30,4 +30,17 @@ export class DomainService {
       where: { domain },
     });
   }
+
+  public async registerDomain(
+    userId: number,
+    domain: string,
+  ): Promise<DomainEntity> {
+    const newDomain = this.domainRepository.create({
+      domain,
+      ownerId: userId,
+    });
+
+    return (await this.domainRepository.insert(newDomain))
+      .generatedMaps[0] as DomainEntity;
+  }
 }
