@@ -1,22 +1,21 @@
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 
-import { RecordEntity } from '@/common/entities';
+import { NotificationSeverity } from '@/view/common/types/Notification';
 import { ApplicationState } from '@/view/store';
 import { notify } from '@/view/store/actions/app/notify';
 import {
   loadDomain,
   LoadDomainResult,
 } from '@/view/store/actions/loader/loadDomain';
-import styled from '@emotion/styled';
-import { Paper, Typography } from '@mui/material';
-import { NotificationSeverity } from '@/view/common/types/Notification';
 import {
   loadRecords,
   LoadRecordsResult,
 } from '@/view/store/actions/loader/loadRecords';
+import styled from '@emotion/styled';
+import { Paper, Typography } from '@mui/material';
 
 const RootPaper = styled(Paper)`
   padding: 1rem 1rem;
@@ -109,6 +108,14 @@ function DomainManager({
           &nbsp;-&nbsp;{records.length} records associated
         </Typography>
       </RootPaper>
+
+      <br />
+
+      <RootPaper>adder</RootPaper>
+
+      <br />
+
+      <RootPaper>records list</RootPaper>
     </>
   );
 }
