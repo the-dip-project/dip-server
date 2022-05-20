@@ -1,13 +1,16 @@
 import { SyntheticEvent, useState } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { useNavigate } from 'react-router';
 
 import { generateAnswer } from '@/common/helpers/generate-answer';
+import { bySeconds } from '@/common/helpers/timespan';
 import { ResponseDTO } from '@/common/models/dto/response.dto';
+import { NotificationSeverity } from '@/view/common/types/Notification';
 import { breakpoints } from '@/view/constants/breakpoints';
+import { notify } from '@/view/store/actions/app/notify';
 import styled from '@emotion/styled';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
-  Alert,
   Button,
   CircularProgress,
   IconButton,
@@ -57,18 +60,14 @@ const Info = styled.div`
   padding: 1.5rem 2rem;
 `;
 
-const FloatingContainer = styled.div`
-  position: fixed;
-  bottom: 2rem;
-  left: 2rem;
-  max-width: calc(100vw - 4rem);
-`;
+const connector = connect(() => ({}), {
+  notify,
+});
 
-function LoginForm() {
+function LoginForm({ notify }: ConnectedProps<typeof connector>) {
   const [showPassword, setShowPassword] = useState(false);
   const [loggingIn, setLoggingIn] = useState(false);
   const navigate = useNavigate();
-  const [error, setError] = useState('');
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
@@ -93,9 +92,20 @@ function LoginForm() {
         res.json(),
       )) as ResponseDTO<string>;
 
-      if (statusCode0 !== HttpStatus.OK) {
-        setError(typeof message0 === 'string' ? message0 : message0.join('. '));
-        return;
+      switch (statusCode0) {
+        case HttpStatus.NOT_FOUND:
+          notify('User does not exists', NotificationSeverity.WARNING);
+          return;
+
+        case HttpStatus.INTERNAL_SERVER_ERROR:
+          notify(
+            typeof message0 === 'string' ? message0 : message0.join('. '),
+            NotificationSeverity.ERROR,
+          );
+          return;
+
+        default:
+          break;
       }
 
       const answer = generateAnswer(body, password, { hashPassword: true });
@@ -111,12 +121,23 @@ function LoginForm() {
         },
       ).then((res) => res.json());
 
-      if (statusCode1 !== HttpStatus.OK) {
-        setError(typeof message1 === 'string' ? message1 : message1.join('. '));
-        return;
+      switch (statusCode1) {
+        case HttpStatus.NOT_ACCEPTABLE:
+          notify('Wrong password', NotificationSeverity.WARNING);
+          return;
+
+        case HttpStatus.INTERNAL_SERVER_ERROR:
+          notify(
+            typeof message1 === 'string' ? message1 : message1.join('. '),
+            NotificationSeverity.ERROR,
+          );
+          return;
       }
 
-      navigate('/');
+      notify('Logged in successfully', NotificationSeverity.SUCCESS);
+
+      setTimeout(() => navigate('/'), bySeconds(1));
+
       navigated = true;
     })();
 
@@ -125,14 +146,6 @@ function LoginForm() {
 
   return (
     <Root elevation={4} onSubmit={handleSubmit}>
-      {error.length !== 0 ? (
-        <FloatingContainer>
-          <Alert severity="error" onClose={() => setError('')}>
-            {error}
-          </Alert>
-        </FloatingContainer>
-      ) : null}
-
       <Form>
         <Typography variant="h4">DIP - Dynamic IP</Typography>
 
@@ -184,4 +197,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default connector(LoginForm);
