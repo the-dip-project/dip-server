@@ -64,8 +64,6 @@ function ManagerPane({ loadDomains }: ConnectedProps<typeof connector>) {
 
         <Divider />
 
-        <br />
-
         <DomainManager />
         <DomainsList />
       </Root>

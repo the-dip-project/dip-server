@@ -20,10 +20,12 @@ import { Paper, Typography } from '@mui/material';
 import RecordAdder from './RecordAdder/RecordAdder';
 import RecordsList from './RecordsList/RecordsList';
 
-const RootPaper = styled(Paper)`
+const Root = styled(Paper)`
   padding: 1rem 1rem;
+  margin-top: 2rem;
   &.hide {
     display: none;
+    margin: 0;
   }
 `;
 
@@ -98,7 +100,7 @@ function DomainManager({
 
   return (
     <>
-      <RootPaper className={clsx({ hide: !name })}>
+      <Root className={clsx({ hide: !name })}>
         <Typography variant="h6">
           Created at&nbsp;
           {new Date(domain?.creationDate).toLocaleString('en-US', {
@@ -110,19 +112,15 @@ function DomainManager({
           })}
           &nbsp;-&nbsp;{records.length} records associated
         </Typography>
-      </RootPaper>
+      </Root>
 
-      <br />
-
-      <RootPaper className={clsx({ hide: !name })}>
+      <Root className={clsx({ hide: !name })}>
         <RecordAdder />
-      </RootPaper>
+      </Root>
 
-      <br />
-
-      <RootPaper className={clsx({ hide: !name })}>
+      <Root className={clsx({ hide: !name })}>
         <RecordsList />
-      </RootPaper>
+      </Root>
     </>
   );
 }

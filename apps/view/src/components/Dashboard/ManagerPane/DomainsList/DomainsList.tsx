@@ -23,8 +23,10 @@ import clsx from 'clsx';
 
 const Root = styled(Paper)`
   padding: 1rem 1rem;
+  margin-top: 2rem;
   &.hide {
     display: none;
+    margin: 0;
   }
 `;
 
@@ -76,8 +78,6 @@ function DomainsList({ domains }: ConnectedProps<typeof connector>) {
       <Root className={clsx({ hide: !!name })}>
         <DomainAdder />
       </Root>
-
-      <br />
 
       <Root className={clsx({ hide: !!name })}>
         <Overhead>
