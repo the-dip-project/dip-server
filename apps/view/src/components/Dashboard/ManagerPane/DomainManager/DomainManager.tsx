@@ -73,10 +73,16 @@ function DomainManager({
         default:
           break;
       }
-
-      // const loadRecordsResult = await loadRecords(domain.id);
     })();
   }, [_domainId]);
+
+  useEffect(() => {
+    if (!domain) return;
+
+    (async () => {
+      const loadRecordsResult = await loadRecords(domain.id);
+    })();
+  }, [domain]);
 
   return (
     <>
