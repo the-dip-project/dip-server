@@ -1,8 +1,9 @@
 import { CurrentUser } from '@/common/decorators/current-user';
-import { DomainEntity, UserEntity } from '@/common/entities';
+import { DomainEntity, RecordEntity, UserEntity } from '@/common/entities';
 import { DomainListItem } from '@/common/models/domain-list-item';
 import { GetAllDomainsQueryDTO } from '@/common/models/dto/domain/get-all-domains.query.dto';
 import { GetDomainParamDTO } from '@/common/models/dto/domain/get-domain.param.dto';
+import { GetRecordsParamDTO } from '@/common/models/dto/domain/get-records.param.dto';
 import { RegisterDomainBodyDTO } from '@/common/models/dto/domain/register-domain.body.dto';
 import { ResponseDTO } from '@/common/models/dto/response.dto';
 import {
@@ -20,10 +21,14 @@ import {
 } from '@nestjs/common';
 
 import { DomainService } from './domain.service';
+import { RecordService } from './record.service';
 
 @Controller('/api/domain')
 export class DomainController {
-  public constructor(private readonly domainService: DomainService) {}
+  public constructor(
+    private readonly domainService: DomainService,
+    private readonly recordService: RecordService,
+  ) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
@@ -50,7 +55,7 @@ export class DomainController {
         id: domain.id,
         domain: domain.domain,
         creationDate: domain.creationDate.getTime(),
-        records: await this.domainService.getRecordsCountByDomainId(domain.id),
+        records: await this.recordService.getRecordsCountByDomainId(domain.id),
       });
     }
 
@@ -70,6 +75,23 @@ export class DomainController {
       throw new ForbiddenException('domain belongs to other user');
 
     return new ResponseDTO(HttpStatus.OK, [], storedDomain);
+  }
+
+  @Get(':domainId/record')
+  public async getRecords(
+    @CurrentUser() user: UserEntity,
+    @Param() { domainId }: GetRecordsParamDTO,
+  ): Promise<ResponseDTO<RecordEntity[]>> {
+    const storedDomain = await this.domainService.getDomainById(domainId);
+
+    if (!storedDomain) throw new NotFoundException('domain does not exist');
+
+    if (storedDomain.ownerId !== user.id)
+      throw new ForbiddenException('domain belongs to other user');
+
+    const records = await this.recordService.getRecordsByDomainId(domainId);
+
+    return new ResponseDTO(HttpStatus.OK, [], records);
   }
 
   @Post()

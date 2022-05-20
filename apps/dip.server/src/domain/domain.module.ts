@@ -4,10 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DomainController } from './domain.controller';
 import { DomainService } from './domain.service';
+import { RecordService } from './record.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([DomainEntity, RecordEntity])],
   controllers: [DomainController],
-  providers: [DomainService],
+  providers: [DomainService, RecordService],
 })
 export class DomainModule {}
