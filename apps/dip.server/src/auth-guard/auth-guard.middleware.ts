@@ -36,17 +36,24 @@ export class AuthGuardMiddleware implements NestMiddleware {
     if (typeof token !== 'string')
       throw new BadRequestException('required auth token not found');
 
-    const { userId, level } = (await decode<AuthTokenPayload>(
-      token,
-    )) as AuthTokenPayload;
+    let id: number;
 
-    if (typeof userId !== 'number' && typeof level !== 'number') {
-      res.clearCookie(CookieEntries.AUTH_TOKEN);
+    try {
+      const { userId, level } = (await decode<AuthTokenPayload>(
+        token,
+      )) as AuthTokenPayload;
+      id = userId;
+
+      if (typeof userId !== 'number' && typeof level !== 'number') {
+        res.clearCookie(CookieEntries.AUTH_TOKEN);
+        throw new BadRequestException('Invalid token');
+      }
+    } catch (err) {
       throw new BadRequestException('Invalid token');
     }
 
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { id },
     });
 
     if (!user) {
