@@ -1,4 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('User')
 export class UserEntity {
@@ -20,6 +25,6 @@ export class UserEntity {
   @Column('text', { name: 'display_name', nullable: false })
   displayName!: string;
 
-  @Column('datetime', { name: 'creation_date', nullable: false })
+  @CreateDateColumn({ name: 'creation_date', nullable: false })
   creationDate!: Date;
 }

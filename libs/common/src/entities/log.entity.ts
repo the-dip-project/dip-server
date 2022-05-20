@@ -21,21 +21,21 @@ export class LogEntity {
   @Column('int', { name: 'type', nullable: false })
   type!: number;
 
-  @Column('text', { name: 'scope' })
+  @Column('text', { name: 'scope', nullable: false })
   scope!: string;
 
-  @Column('text', { name: 'message' })
+  @Column('text', { name: 'message', nullable: false })
   message!: string;
 
-  @Column('text', { name: 'stack' })
+  @Column('text', { name: 'stack', nullable: false })
   stack!: string;
 
-  @Column('text', { name: 'detail' })
+  @Column('text', { name: 'detail', nullable: false })
   detail!: string;
 
-  @CreateDateColumn({ name: 'creation_date' })
+  @CreateDateColumn({ name: 'creation_date', nullable: false })
   creationDate!: Date;
 
-  @Column('text', { name: 'source' })
+  @Column('text', { name: 'source', nullable: false })
   source!: string;
 }
