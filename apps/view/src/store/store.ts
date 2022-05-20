@@ -5,10 +5,11 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { ActionTypes } from './ActionTypes';
 import app from './reducers/app';
+import confirm from './reducers/confirm';
 import domain from './reducers/domain';
 
 const store = configureStore({
-  ..._merge({ reducer: {}, preloadedState: {} }, app, domain),
+  ..._merge({ reducer: {}, preloadedState: {} }, app, domain, confirm),
   middleware(getDefaultMiddleware) {
     return [...getDefaultMiddleware(), thunk];
   },
