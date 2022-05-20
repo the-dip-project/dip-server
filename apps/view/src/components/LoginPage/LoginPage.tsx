@@ -39,7 +39,6 @@ const Root = styled(Box)`
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     width: '100%',
-    height: '54%',
     '& > div': {
       width: '50%',
       height: '100%',

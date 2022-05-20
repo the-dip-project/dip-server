@@ -39,7 +39,7 @@ const Root = styled(Paper)`
 `;
 
 const Form = styled.form`
-  padding: 3rem 2rem 0 2rem;
+  padding: 3rem 2rem 1rem 2rem;
   flex: 1;
 `;
 
