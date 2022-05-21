@@ -17,7 +17,7 @@ import {
 import styled from '@emotion/styled';
 import { Paper, Typography } from '@mui/material';
 
-import RecordAdder from './RecordAdder/RecordAdder';
+import RecordModifier from './RecordModifier/RecordModifier';
 import RecordsList from './RecordsList/RecordsList';
 
 const Root = styled(Paper)`
@@ -115,7 +115,7 @@ function DomainManager({
       </Root>
 
       <Root className={clsx({ hide: !name })}>
-        <RecordAdder />
+        <RecordModifier />
       </Root>
 
       <Root className={clsx({ hide: !name })}>

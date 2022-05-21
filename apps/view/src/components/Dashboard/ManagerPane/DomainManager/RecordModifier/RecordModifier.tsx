@@ -72,7 +72,7 @@ const validationFn = _debounce(
   { trailing: true },
 );
 
-function RecordAdder({ domain }: ConnectedProps<typeof connector>) {
+function RecordModifier({ domain }: ConnectedProps<typeof connector>) {
   const [record, setRecord] = useState<RecordEntity>({ ...defaultRecord });
   const [originalHost, setOriginalHost] = useState('@');
   const Additional = AdditionalValue[record.type];
@@ -202,4 +202,4 @@ function RecordAdder({ domain }: ConnectedProps<typeof connector>) {
   );
 }
 
-export default connector(RecordAdder);
+export default connector(RecordModifier);
