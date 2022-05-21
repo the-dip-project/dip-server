@@ -1,4 +1,4 @@
-This document specify how resource records are stored with extended data other than standard data in A or AAAA records. Extended data fields are separated with pipe `( | )` character.
+This document specifies how resource records are stored with extended data other than standard data in A or AAAA records. Extended data fields are separated by pipe `( | )` character.
 
 <br>
 
