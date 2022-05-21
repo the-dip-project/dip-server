@@ -2,7 +2,7 @@ import * as Joi from 'joi';
 import { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { CLASS, TYPE } from '@/common/constants/dns-spec';
+import { CLASS, RCLASS, TYPE } from '@/common/constants/dns-spec';
 import { EditableRecordTypes } from '@/common/constants/editable-record-type';
 import { RecordEntity } from '@/common/entities';
 import { ApplicationState } from '@/view/store';
@@ -34,10 +34,6 @@ const connector = connect(
     domain: state.domain.domain,
   }),
   {},
-);
-
-const _CLASS = Object.fromEntries(
-  Object.entries(CLASS).map(([key, value]) => [value, key]),
 );
 
 const defaultRecord: RecordEntity = {
@@ -145,7 +141,7 @@ function RecordAdder({ domain }: ConnectedProps<typeof connector>) {
         >
           <InputLabel>Class</InputLabel>
 
-          <FilledInput type="text" value={_CLASS[record.class as any]} />
+          <FilledInput type="text" value={RCLASS[record.class as any]} />
         </FormControl>
 
         <FormControl variant="filled" style={{ flex: 1 }}>

@@ -13,6 +13,7 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
+import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import RecordsItem from './RecordsItem/RecordsItem';
 
@@ -30,6 +31,8 @@ const connector = connect(
 );
 
 function RecordsList({ records }: ConnectedProps<typeof connector>) {
+  const [selections, setSelections] = useState<Set<number>>(new Set());
+
   return (
     <>
       <Toolbar variant="dense">
@@ -49,7 +52,19 @@ function RecordsList({ records }: ConnectedProps<typeof connector>) {
         <TableHead>
           <TableRow>
             <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
-              <Checkbox />
+              <Checkbox
+                checked={
+                  selections.size !== 0 && selections.size === records.length
+                }
+                indeterminate={
+                  selections.size !== 0 && selections.size !== records.length
+                }
+                onChange={(e) =>
+                  e.target.checked
+                    ? setSelections(new Set(records.map((record) => record.id)))
+                    : setSelections(new Set())
+                }
+              />
             </TableCell>
 
             <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
@@ -76,7 +91,17 @@ function RecordsList({ records }: ConnectedProps<typeof connector>) {
 
         <TableBody>
           {records.map((record) => (
-            <RecordsItem key={`record/${record.id}`} record={record} />
+            <RecordsItem
+              key={`record/${record.id}`}
+              record={record}
+              selected={selections.has(record.id)}
+              onSelectionChanged={(selected) => {
+                if (selected) selections.add(record.id);
+                else selections.delete(record.id);
+
+                setSelections(new Set(selections));
+              }}
+            />
           ))}
 
           {records.length === 0 && (

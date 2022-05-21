@@ -30,6 +30,11 @@ export const TYPE = {
   ANY: 0xff,
   CAA: 0x101,
 };
+
+export const RTYPE = Object.fromEntries(
+  Object.entries(TYPE).map(([k, v]) => [v, k]),
+);
+
 /**
  * [QUERY_CLASS description]
  * @type {Object}
@@ -42,6 +47,11 @@ export const CLASS = {
   HS: 0x04,
   ANY: 0xff,
 };
+
+export const RCLASS = Object.fromEntries(
+  Object.entries(CLASS).map(([k, v]) => [v, k]),
+);
+
 /**
  * [EDNS_OPTION_CODE description]
  * @type {Object}
