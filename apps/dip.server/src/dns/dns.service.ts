@@ -1,21 +1,31 @@
 import { Cache } from 'cache-manager';
 import { RemoteInfo } from 'dgram';
 import { DnsAnswer, DnsQuestion, DnsRequest, DnsResponse, Packet } from 'dns2';
+import { FindConditions, Repository } from 'typeorm';
 
+import { DomainEntity, RecordEntity } from '@/common/entities';
 import { FallbackAddress } from '@/common/models/fallback-address';
-import { CACHE_MANAGER, Inject, Injectable, Scope } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  Logger,
+  Scope,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { green, yellowBright } from 'chalk';
 
 import { ConfigKeys } from '../base/config.module';
 import { DnsClientService } from './dns-client/dns-client.service';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DomainEntity, RecordEntity } from '@/common/entities';
-import { FindConditions, Repository } from 'typeorm';
+import { hrtime } from 'process';
+import { RTYPE } from '@/common/constants/dns-spec';
 
 @Injectable({
   scope: Scope.DEFAULT,
 })
 export class DnsService {
+  private readonly logger: Logger = new Logger('DnsService');
   private readonly fallbackServers: FallbackAddress[];
 
   public constructor(
@@ -166,8 +176,7 @@ export class DnsService {
     send: (res: DnsResponse) => void,
     _remoteInfo: RemoteInfo,
   ): Promise<void> {
-    const start = +new Date();
-    console.time('Query@' + start);
+    const start = hrtime();
 
     const { fallbackServers } = this;
 
@@ -207,6 +216,15 @@ export class DnsService {
     );
 
     send(response);
-    setImmediate(() => console.timeEnd('Query@' + start));
+    setImmediate(() => {
+      const [sec, nanosec] = hrtime(start);
+      const ms = sec * 1e3 + nanosec / 1e6;
+
+      const log = `Query :: ${request.questions[0].name} [${
+        RTYPE[request.questions[0]['type']]
+      }] took ${yellowBright(ms + 'ms')}`;
+
+      this.logger.log(log);
+    });
   }
 }
