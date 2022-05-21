@@ -1,8 +1,9 @@
 import _debounce from 'lodash/debounce';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { ApplicationState } from '@/view/store';
+import { resetEditingRecord } from '@/view/store/actions/domain/resetEditingRecord';
 
 import AdditionalValueEditor from './AdditionalValueEditors/AdditionalValueEditor';
 import CommonValueEditor from './CommonValueEditor/CommonValueEditor';
@@ -10,14 +11,22 @@ import ModifierHandler from './ModifierHandler/ModifierHandler';
 
 const connector = connect(
   (state: ApplicationState) => ({
-    domain: state.domain.domain,
-    record: state.domain.editingRecord,
+    domainId: state.domain.domain?.id,
+    recordId: state.domain.editingRecord.id,
   }),
-  {},
+  {
+    resetEditingRecord,
+  },
 );
 
-function RecordModifier({ domain, record }: ConnectedProps<typeof connector>) {
-  const [originalHost, setOriginalHost] = useState('@');
+function RecordModifier({
+  domainId,
+  recordId,
+  resetEditingRecord,
+}: ConnectedProps<typeof connector>) {
+  useEffect(() => {
+    if (domainId !== recordId) resetEditingRecord({ domainId: domainId });
+  }, [domainId]);
 
   return (
     <>

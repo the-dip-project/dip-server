@@ -1,30 +1,42 @@
-import { ApplicationState } from '@/view/store';
-import { FilledInput, FormControl, FormGroup, InputLabel } from '@mui/material';
+import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+
+import { ApplicationState } from '@/view/store';
+import { setEditingRecord } from '@/view/store/actions/domain/setEditingRecord';
+import { FilledInput, FormControl, FormGroup, InputLabel } from '@mui/material';
+
+import validate from './hostValidator';
 
 const connector = connect(
   (state: ApplicationState) => ({
-    record: state.domain.editingRecord,
+    host: state.domain.editingRecord.host,
+    data: state.domain.editingRecord.data,
+    domain: state.domain.domain,
   }),
-  {},
+  {
+    setEditingRecord,
+  },
 );
 
-function HostValueEditor({ record }: ConnectedProps<typeof connector>) {
+function HostValueEditor({
+  host,
+  data,
+  domain,
+  setEditingRecord,
+}: ConnectedProps<typeof connector>) {
+  const [originalHost, setOriginalHost] = useState('@');
+
   const handleHostChange = (event) => {
-    // const host = event.target.value;
-    // validate(
-    //   originalHost,
-    //   host,
-    //   domain.domain,
-    //   (result) => (
-    //     setRecord({
-    //       ...record,
-    //       host: result,
-    //     }),
-    //     setOriginalHost(result)
-    //   ),
-    // );
-    // setRecord({ ...record, host: host });
+    const { value } = event.target;
+
+    validate(
+      originalHost,
+      value,
+      domain.domain,
+      (result) => (setEditingRecord({ host: result }), setOriginalHost(result)),
+    );
+
+    setEditingRecord({ host: value });
   };
 
   return (
@@ -35,17 +47,13 @@ function HostValueEditor({ record }: ConnectedProps<typeof connector>) {
       >
         <InputLabel>Host</InputLabel>
 
-        <FilledInput
-          type="text"
-          value={record.host}
-          onChange={handleHostChange}
-        />
+        <FilledInput type="text" value={host} onChange={handleHostChange} />
       </FormControl>
 
       <FormControl variant="filled" style={{ flex: 1 }}>
         <InputLabel>Value</InputLabel>
 
-        <FilledInput type="text" value={record.data} />
+        <FilledInput type="text" value={data} />
       </FormControl>
     </FormGroup>
   );
