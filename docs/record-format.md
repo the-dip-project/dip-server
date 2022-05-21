@@ -14,15 +14,19 @@ This document specifies how resource records are stored with extended data other
         <tr>
             <td class="tg-0pky">A</td>
             <td class="tg-0pky">address</td>
-            <td class="tg-0pky" colspan="6">
-                <span style="font-style:italic">empty</span>
+            <td class="tg-0pky" colspan="6" style="text-align: center">
+                <span style="font-style:italic">
+                    <i>empty</i>
+                </span>
             </td>
         </tr>
         <tr>
             <td class="tg-0pky">AAAA</td>
             <td class="tg-0pky">address</td>
-            <td class="tg-0pky" colspan="6">
-                <span style="font-style:italic">empty</span>
+            <td class="tg-0pky" colspan="6" style="text-align: center">
+                <span style="font-style:italic">
+                    <i>empty</i>
+                </span>
             </td>
         </tr>
         <tr>
@@ -33,36 +37,46 @@ This document specifies how resource records are stored with extended data other
         <tr>
             <td class="tg-0pky">NS</td>
             <td class="tg-0pky">nameserver</td>
-            <td class="tg-0pky" colspan="6">
-                <span style="font-style:italic">empty</span>
+            <td class="tg-0pky" colspan="6" style="text-align: center">
+                <span style="font-style:italic">
+                    <i>empty</i>
+                </span>
             </td>
         </tr>
         <tr>
             <td class="tg-0pky">PTR</td>
             <td class="tg-0pky">domain</td>
-            <td class="tg-0pky" colspan="6">
-                <span style="font-style:italic">empty</span>
+            <td class="tg-0pky" colspan="6" style="text-align: center">
+                <span style="font-style:italic">
+                    <i>empty</i>
+                </span>
             </td>
         </tr>
         <tr>
             <td class="tg-0pky">CNAME</td>
             <td class="tg-0pky">domain</td>
-            <td class="tg-0pky" colspan="6">
-                <span style="font-style:italic">empty</span>
+            <td class="tg-0pky" colspan="6" style="text-align: center">
+                <span style="font-style:italic">
+                    <i>empty</i>
+                </span>
             </td>
         </tr>
         <tr>
             <td class="tg-0pky">SPF</td>
             <td class="tg-0pky">data</td>
-            <td class="tg-0pky" colspan="6">
-                <span style="font-style:italic">empty</span>
+            <td class="tg-0pky" colspan="6" style="text-align: center">
+                <span style="font-style:italic">
+                    <i>empty</i>
+                </span>
             </td>
         </tr>
         <tr>
             <td class="tg-0pky">TXT</td>
             <td class="tg-0pky">data</td>
-            <td class="tg-0pky" colspan="6">
-                <span style="font-style:italic">empty</span>
+            <td class="tg-0pky" colspan="6" style="text-align: center">
+                <span style="font-style:italic">
+                    <i>empty</i>
+                </span>
             </td>
         </tr>
         <tr>
@@ -90,3 +104,5 @@ This document specifies how resource records are stored with extended data other
         </tr>
     </tbody>
 </table>
+
+Field names above are extracted from `dns2` package.
