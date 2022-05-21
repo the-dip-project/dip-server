@@ -6,9 +6,11 @@ import { setEditingRecord } from '@/view/store/actions/domain/setEditingRecord';
 import { FilledInput, FormControl, FormGroup, InputLabel } from '@mui/material';
 
 import validate from './hostValidator';
+import { TYPE } from '@/common/constants/dns-spec';
 
 const connector = connect(
   (state: ApplicationState) => ({
+    rrType: state.domain.editingRecord.type,
     host: state.domain.editingRecord.host,
     data: state.domain.editingRecord.data,
     domain: state.domain.domain,
@@ -18,7 +20,22 @@ const connector = connect(
   },
 );
 
+const labels = {
+  [TYPE.A]: 'Address',
+  [TYPE.AAAA]: 'Address',
+  [TYPE.MX]: 'Mail server',
+  [TYPE.NS]: 'Name server',
+  [TYPE.CNAME]: 'Domain',
+  [TYPE.PTR]: 'Domain',
+  [TYPE.TXT]: 'Value',
+  [TYPE.SPF]: 'Value',
+  [TYPE.SRV]: 'Target',
+  [TYPE.SOA]: 'Primary',
+  [TYPE.CAA]: 'Value',
+};
+
 function HostValueEditor({
+  rrType,
   host,
   data,
   domain,
@@ -51,7 +68,7 @@ function HostValueEditor({
       </FormControl>
 
       <FormControl variant="filled" style={{ flex: 1 }}>
-        <InputLabel>Value</InputLabel>
+        <InputLabel>{labels[rrType] ?? 'Value'}</InputLabel>
 
         <FilledInput type="text" value={data} />
       </FormControl>
