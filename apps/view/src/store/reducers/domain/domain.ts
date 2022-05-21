@@ -7,12 +7,14 @@ export type DomainState = {
   domains: DomainListItem[];
   domain: DomainEntity;
   records: RecordEntity[];
+  recordModifierPurpose: 'create' | 'update';
 };
 
 export const initialState: DomainState = {
   domains: [],
   domain: null,
   records: [],
+  recordModifierPurpose: 'create',
 };
 
 export function reduce(state = initialState, action: AnyAction): DomainState {
@@ -25,6 +27,12 @@ export function reduce(state = initialState, action: AnyAction): DomainState {
 
     case ActionTypes.DOMAIN__SET_RECORDS:
       return { ...state, records: action.payload };
+
+    case ActionTypes.DOMAIN__SET_MOD_PURPOSE:
+      return {
+        ...state,
+        recordModifierPurpose: action.payload,
+      };
 
     default:
       return state;
