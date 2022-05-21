@@ -78,6 +78,16 @@ function RecordsList({ records }: ConnectedProps<typeof connector>) {
           {records.map((record) => (
             <RecordsItem key={`record/${record.id}`} record={record} />
           ))}
+
+          {records.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={7} align="center">
+                <Typography variant="body1" color="gray" fontWeight="500">
+                  No records found
+                </Typography>
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </>
