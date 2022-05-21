@@ -37,12 +37,69 @@ export class DnsService {
   ): Record<string, unknown> {
     const additional: Record<string, unknown> = (() => {
       switch (record.type) {
+        case Packet.TYPE.A:
+        case Packet.TYPE.AAAA:
+          return { address: record.data };
+
         case Packet.TYPE.MX: {
-          const [priority, exchange] = record.extendedData.split('|');
+          const priority = record.extendedData;
 
           return {
             priority: Number(priority),
-            exchange: exchange,
+            exchange: record.data,
+          };
+        }
+
+        case Packet.TYPE.NS:
+          return {
+            ns: record.data,
+          };
+
+        case Packet.TYPE.PTR:
+        case Packet.TYPE.CNAME:
+          return {
+            domain: record.data,
+          };
+
+        case Packet.TYPE.SPF:
+        case Packet.TYPE.TXT:
+          return {
+            data: record.data,
+          };
+
+        case Packet.TYPE.SOA: {
+          const [admin, serial, refresh, retry, expiration, minimum] =
+            record.extendedData.split('|');
+
+          return {
+            primary: record.data,
+            admin: admin,
+            serial: Number(serial),
+            refresh: Number(refresh),
+            retry: Number(retry),
+            expiration: Number(expiration),
+            minimum: Number(minimum),
+          };
+        }
+
+        case Packet.TYPE.SRV: {
+          const [priority, weight, port] = record.extendedData.split('|');
+
+          return {
+            priority: Number(priority),
+            weight: Number(weight),
+            port: Number(port),
+            target: record.data,
+          };
+        }
+
+        case Packet.TYPE.CAA: {
+          const [flags, tag] = record.extendedData.split('|');
+
+          return {
+            tag,
+            flags: Number(flags),
+            value: record.data,
           };
         }
 
@@ -52,9 +109,6 @@ export class DnsService {
 
       return {};
     })();
-
-    if (!('name' in additional)) additional.name = question.name;
-    if (!('address' in additional)) additional.address = record.data;
 
     return additional;
   }
@@ -98,15 +152,13 @@ export class DnsService {
       loadEagerRelations: false,
     });
 
-    return records.map(
-      (record) =>
-        ({
-          type: question['type'],
-          class: question['class'],
-          ttl: record.ttl,
-          ...this.prepareAdditionalData(question, record),
-        } as unknown as DnsAnswer),
-    );
+    return records.map((record) => ({
+      name: question.name,
+      type: question['type'],
+      class: question['class'],
+      ttl: record.ttl,
+      ...this.prepareAdditionalData(question, record),
+    }));
   }
 
   public async handle(
