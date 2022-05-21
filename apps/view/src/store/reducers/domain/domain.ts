@@ -1,3 +1,4 @@
+import { CLASS, TYPE } from '@/common/constants/dns-spec';
 import { DomainEntity, RecordEntity } from '@/common/entities';
 import { DomainListItem } from '@/common/models/domain-list-item';
 import { AnyAction } from 'redux';
@@ -8,6 +9,19 @@ export type DomainState = {
   domain: DomainEntity;
   records: RecordEntity[];
   recordModifierPurpose: 'create' | 'update';
+  editingRecord: RecordEntity;
+};
+
+const defaultRecord: RecordEntity = {
+  id: undefined,
+  host: '@',
+  type: TYPE.A,
+  class: CLASS.IN,
+  data: '127.0.0.1',
+  ttl: 3600,
+  extendedData: '',
+  domainId: 0,
+  domain: null,
 };
 
 export const initialState: DomainState = {
@@ -15,6 +29,7 @@ export const initialState: DomainState = {
   domain: null,
   records: [],
   recordModifierPurpose: 'create',
+  editingRecord: defaultRecord,
 };
 
 export function reduce(state = initialState, action: AnyAction): DomainState {
