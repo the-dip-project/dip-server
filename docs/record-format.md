@@ -1,32 +1,6 @@
-> This document specify how resource records are stored with extended data other than standard data in A or AAAA records.
+This document specify how resource records are stored with extended data other than standard data in A or AAAA records. Extended data fields are separated with pipe `( | )` character.
 
-> Extended data fields are separated with pipe `( | )` character.
-
-<style type="text/css">
-.tg {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-.tg, .tg * {
-    font-family: Consolas;
-    font-size: 1rem;
-    overflow: hidden;
-    font-weight: normal;
-    word-break: normal;
-}
-
-.tg td, .tg th {
-    padding: 5px 10px;
-    border: 1px solid black;
-}
-
-.tg .tg-0pky {
-    border-color: inherit;
-}
-</style>
-
-> A record:
+<br>
 
 <table class="tg">
     <thead>
