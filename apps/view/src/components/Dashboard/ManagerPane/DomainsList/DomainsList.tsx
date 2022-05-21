@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
@@ -15,11 +16,11 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Typography,
 } from '@mui/material';
 
 import DomainAdder from './DomainAdder/DomainAdder';
 import DomainsItem from './DomainsItem/DomainsItem';
-import clsx from 'clsx';
 
 const Root = styled(Paper)`
   padding: 1rem 1rem;
@@ -132,6 +133,16 @@ function DomainsList({ domains }: ConnectedProps<typeof connector>) {
                   }}
                 />
               ))}
+
+              {domains.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={4} align="center">
+                    <Typography variant="body1" color="gray" fontWeight="500">
+                      There is no registered domain
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
