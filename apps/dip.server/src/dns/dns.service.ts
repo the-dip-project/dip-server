@@ -1,8 +1,11 @@
 import { Cache } from 'cache-manager';
+import { yellowBright } from 'chalk';
 import { RemoteInfo } from 'dgram';
 import { DnsAnswer, DnsQuestion, DnsRequest, DnsResponse, Packet } from 'dns2';
+import { hrtime } from 'process';
 import { FindConditions, Repository } from 'typeorm';
 
+import { RTYPE } from '@/common/constants/dns-spec';
 import { DomainEntity, RecordEntity } from '@/common/entities';
 import { FallbackAddress } from '@/common/models/fallback-address';
 import {
@@ -14,12 +17,9 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { green, yellowBright } from 'chalk';
 
 import { ConfigKeys } from '../base/config.module';
 import { DnsClientService } from './dns-client/dns-client.service';
-import { hrtime } from 'process';
-import { RTYPE } from '@/common/constants/dns-spec';
 
 @Injectable({
   scope: Scope.DEFAULT,
