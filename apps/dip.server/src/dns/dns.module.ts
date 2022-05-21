@@ -1,13 +1,19 @@
 import { createServer } from 'dns2';
 
+import { DomainEntity, RecordEntity } from '@/common/entities';
 import { CacheModule, Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ConfigKeys } from '../base/config.module';
 import { DnsService } from './dns.service';
 
 @Module({
-  imports: [ConfigModule, CacheModule.register({ max: 1000 })],
+  imports: [
+    ConfigModule,
+    CacheModule.register({ max: 1000 }),
+    TypeOrmModule.forFeature([DomainEntity, RecordEntity]),
+  ],
   providers: [DnsService],
 })
 export class DnsModule {
