@@ -1,7 +1,9 @@
+import { AnyAction } from 'redux';
+
 import { CLASS, TYPE } from '@/common/constants/dns-spec';
 import { DomainEntity, RecordEntity } from '@/common/entities';
 import { DomainListItem } from '@/common/models/domain-list-item';
-import { AnyAction } from 'redux';
+
 import { ActionTypes } from '../../ActionTypes';
 
 export type DomainState = {
@@ -12,7 +14,7 @@ export type DomainState = {
   editingRecord: RecordEntity;
 };
 
-const defaultRecord: RecordEntity = {
+export const defaultRecord: RecordEntity = {
   id: undefined,
   host: '@',
   type: TYPE.A,
@@ -47,6 +49,18 @@ export function reduce(state = initialState, action: AnyAction): DomainState {
       return {
         ...state,
         recordModifierPurpose: action.payload,
+      };
+
+    case ActionTypes.DOMAIN__SET_EDITING_RECORD:
+      return {
+        ...state,
+        editingRecord: { ...state.editingRecord, ...action.payload },
+      };
+
+    case ActionTypes.DOMAIN__RESET_EDITING_RECORD:
+      return {
+        ...state,
+        editingRecord: { ...defaultRecord, ...action.payload },
       };
 
     default:
