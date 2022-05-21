@@ -1,3 +1,5 @@
+import { connect, ConnectedProps } from 'react-redux';
+
 import { RCLASS } from '@/common/constants/dns-spec';
 import { EditableRecordTypes } from '@/common/constants/editable-record-type';
 import { ApplicationState } from '@/view/store';
@@ -9,20 +11,29 @@ import {
   MenuItem,
   Select,
 } from '@mui/material';
-import { connect, ConnectedProps } from 'react-redux';
+import { setEditingRecord } from '@/view/store/actions/domain/setEditingRecord';
 
 const connector = connect(
   (state: ApplicationState) => ({
-    record: state.domain.editingRecord,
+    rrType: state.domain.editingRecord.type,
+    rrClass: state.domain.editingRecord.class,
+    rrTtl: state.domain.editingRecord.ttl,
   }),
-  {},
+  {
+    setEditingRecord,
+  },
 );
 
-function TypeClassTTLEditor({ record }: ConnectedProps<typeof connector>) {
+function TypeClassTTLEditor({
+  rrType,
+  rrClass,
+  rrTtl,
+  setEditingRecord,
+}: ConnectedProps<typeof connector>) {
   const handleTTLChange = (event) => {
-    // const ttl = Number(event.target.value);
-    // if (Number.isNaN(ttl)) return;
-    // setRecord({ ...record, ttl });
+    const ttl = Number(event.target.value);
+    if (Number.isNaN(ttl)) return;
+    setEditingRecord({ ttl });
   };
 
   return (
@@ -35,11 +46,9 @@ function TypeClassTTLEditor({ record }: ConnectedProps<typeof connector>) {
 
         <Select
           variant="filled"
-          value={record.type}
+          value={rrType}
           fullWidth
-          // onChange={(e) =>
-          //   setRecord({ ...record, type: e.target.value as number })
-          // }
+          onChange={(e) => setEditingRecord({ type: e.target.value as number })}
         >
           {EditableRecordTypes.map((type) => (
             <MenuItem key={`edit.record/${type[0]}`} value={type[0]}>
@@ -56,17 +65,13 @@ function TypeClassTTLEditor({ record }: ConnectedProps<typeof connector>) {
       >
         <InputLabel>Class</InputLabel>
 
-        <FilledInput type="text" value={RCLASS[record.class as any]} />
+        <FilledInput type="text" value={RCLASS[rrClass as any]} />
       </FormControl>
 
       <FormControl variant="filled" style={{ flex: 1 }}>
         <InputLabel>Time to live (TTL)</InputLabel>
 
-        <FilledInput
-          type="number"
-          value={record.ttl}
-          onChange={handleTTLChange}
-        />
+        <FilledInput type="number" value={rrTtl} onChange={handleTTLChange} />
       </FormControl>
     </FormGroup>
   );
