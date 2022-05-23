@@ -41,19 +41,19 @@ function HostValueEditor({
   domain,
   setEditingRecord,
 }: ConnectedProps<typeof connector>) {
-  const [originalHost, setOriginalHost] = useState('@');
+  const [editingHost, setEditingHost] = useState('@');
 
   const handleHostChange = (event) => {
     const { value } = event.target;
 
     validate(
-      originalHost,
+      host,
       value,
       domain.domain,
-      (result) => (setEditingRecord({ host: result }), setOriginalHost(result)),
+      (result) => (setEditingRecord({ host: result }), setEditingHost(result)),
     );
 
-    setEditingRecord({ host: value });
+    setEditingHost(value);
   };
 
   return (
@@ -64,7 +64,11 @@ function HostValueEditor({
       >
         <InputLabel>Host</InputLabel>
 
-        <FilledInput type="text" value={host} onChange={handleHostChange} />
+        <FilledInput
+          type="text"
+          value={editingHost}
+          onChange={handleHostChange}
+        />
       </FormControl>
 
       <FormControl variant="filled" style={{ flex: 1 }}>
