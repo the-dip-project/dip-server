@@ -1,5 +1,7 @@
 /**
  USC = UserController
+ AGM = AuthGuardMiddleware
+ DMC = DomainController
  */
 
 export const HttpErrorMessages = {
@@ -20,6 +22,10 @@ export const HttpErrorMessages = {
   AGM_AUTH_TOKEN_NOT_FOUND: ['required auth token not found'],
   AGM_INVALID_TOKEN: ['invalid token'],
   AGM_CARRIED_USER_NOT_FOUND: ["user in token's payload not found"],
+
+  DMC_DOMAIN_NOT_FOUND: ['domain not found'],
+  DMC_DOMAIN_BELONGS_TO_OTHER_USER: ['domain belongs to other user'],
+  DMC_DOMAIN_ALREADY_EXISTS: ['domain already exists'],
 
   $_UNKNOWN_ERROR: ['unknown error'],
 };

@@ -1,5 +1,6 @@
 import { CurrentUser } from '@/common/decorators/current-user';
 import { DomainEntity, RecordEntity, UserEntity } from '@/common/entities';
+import { HttpErrorMessages } from '@/common/messages/http-error';
 import { DomainListItem } from '@/common/models/domain-list-item';
 import { GetAllDomainsQueryDTO } from '@/common/models/dto/domain/get-all-domains.query.dto';
 import { GetDomainParamDTO } from '@/common/models/dto/domain/get-domain.param.dto';
@@ -39,9 +40,12 @@ export class DomainController {
     if (typeof domain !== 'undefined') {
       const storedDomain = await this.domainService.getDomainByName(domain);
 
-      if (!storedDomain) throw new NotFoundException('domain does not exist');
+      if (!storedDomain)
+        throw new NotFoundException(HttpErrorMessages.DMC_DOMAIN_NOT_FOUND);
       if (storedDomain.ownerId !== user.id)
-        throw new ForbiddenException('domain belongs to other user');
+        throw new ForbiddenException(
+          HttpErrorMessages.DMC_DOMAIN_BELONGS_TO_OTHER_USER,
+        );
 
       return new ResponseDTO(HttpStatus.OK, [], storedDomain);
     }
@@ -70,9 +74,12 @@ export class DomainController {
   ): Promise<ResponseDTO<DomainEntity>> {
     const storedDomain = await this.domainService.getDomainById(domainId);
 
-    if (!storedDomain) throw new NotFoundException('domain does not exist');
+    if (!storedDomain)
+      throw new NotFoundException(HttpErrorMessages.DMC_DOMAIN_NOT_FOUND);
     if (storedDomain.ownerId !== user.id)
-      throw new ForbiddenException('domain belongs to other user');
+      throw new ForbiddenException(
+        HttpErrorMessages.DMC_DOMAIN_BELONGS_TO_OTHER_USER,
+      );
 
     return new ResponseDTO(HttpStatus.OK, [], storedDomain);
   }
@@ -84,10 +91,13 @@ export class DomainController {
   ): Promise<ResponseDTO<RecordEntity[]>> {
     const storedDomain = await this.domainService.getDomainById(domainId);
 
-    if (!storedDomain) throw new NotFoundException('domain does not exist');
+    if (!storedDomain)
+      throw new NotFoundException(HttpErrorMessages.DMC_DOMAIN_NOT_FOUND);
 
     if (storedDomain.ownerId !== user.id)
-      throw new ForbiddenException('domain belongs to other user');
+      throw new ForbiddenException(
+        HttpErrorMessages.DMC_DOMAIN_BELONGS_TO_OTHER_USER,
+      );
 
     const records = await this.recordService.getRecordsByDomainId(domainId);
 
@@ -101,7 +111,8 @@ export class DomainController {
   ): Promise<ResponseDTO<void>> {
     const storedDomain = await this.domainService.getDomainByName(domain);
 
-    if (storedDomain) throw new ForbiddenException('domain already exists');
+    if (storedDomain)
+      throw new ForbiddenException(HttpErrorMessages.DMC_DOMAIN_ALREADY_EXISTS);
 
     await this.domainService.registerDomain(user.id, domain);
 
