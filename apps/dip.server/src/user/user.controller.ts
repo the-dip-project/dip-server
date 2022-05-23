@@ -30,6 +30,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { ConfigKeys } from '../base/config.module';
 import { AnswerValidationErrors, UserService } from './user.service';
+import { HttpErrorMessages } from '@/common/messages/http-error';
 
 @Controller('/api/user')
 export class UserController {
@@ -45,7 +46,8 @@ export class UserController {
   ): Promise<ResponseDTO<string>> {
     const user = await this.userService.getUserByUsername(username);
 
-    if (!user) throw new NotFoundException('Username not found');
+    if (!user)
+      throw new NotFoundException(HttpErrorMessages.USC_USERNAME_NOT_FOUND);
 
     const { question, questionCheck, questionCheckBody } =
       await this.userService.generateChallenge(user);
@@ -69,7 +71,10 @@ export class UserController {
     @Cookies(CookieEntries.QUESTION_CHECK) questionCheck: string,
     @Body() { answer }: LoginBodyDTO,
   ): Promise<ResponseDTO<void>> {
-    if (!questionCheck) throw new BadRequestException('Question check missing');
+    if (!questionCheck)
+      throw new BadRequestException(
+        HttpErrorMessages.USC_QUESTION_CHECK_MISSING,
+      );
 
     const validation = await this.userService.validateAnswer(
       questionCheck,
@@ -93,22 +98,30 @@ export class UserController {
 
     switch (validation) {
       case AnswerValidationErrors.NOT_DECODABLE:
-        throw new BadRequestException('Question check can not be decoded');
+        throw new BadRequestException(
+          HttpErrorMessages.USC_QUESTION_CHECK_CAN_NOT_BE_DECODED,
+        );
 
       case AnswerValidationErrors.NOT_VERIFIABLE:
-        throw new BadRequestException('Question check was incorectly signed');
+        throw new BadRequestException(
+          HttpErrorMessages.USC_QUESTION_CHECK_WRONG_SIGNATURE,
+        );
 
       case AnswerValidationErrors.USER_NOT_FOUND:
-        throw new NotFoundException('User not found');
+        throw new NotFoundException(HttpErrorMessages.USC_USER_NOT_FOUND);
 
       case AnswerValidationErrors.EXPIRED:
-        throw new BadRequestException('Question check has expired');
+        throw new BadRequestException(
+          HttpErrorMessages.USC_QUESTION_CHECK_EXPIRED,
+        );
 
       case AnswerValidationErrors.WRONG:
-        throw new BadRequestException('Answer is incorrect');
+        throw new BadRequestException(
+          HttpErrorMessages.USC_ANSWER_IS_INCORRECT,
+        );
 
       default:
-        throw new NotImplementedException('Unknown error');
+        throw new NotImplementedException(HttpErrorMessages.$_UNKNOWN_ERROR);
     }
   }
 
@@ -126,9 +139,7 @@ export class UserController {
     @CurrentUser() user: UserEntity,
   ): Promise<ResponseDTO<PublicUser>> {
     if (!user)
-      throw new UnauthorizedException(
-        'This action requires authenticated access',
-      );
+      throw new UnauthorizedException(HttpErrorMessages.USC_AUTH_REQUIRED);
 
     if (_userId === 'me')
       return new ResponseDTO(
@@ -138,11 +149,7 @@ export class UserController {
       );
 
     if (_userId.match(/\D/))
-      throw new BadRequestException([
-        'userId can be either',
-        '"me" or a number',
-        '"me" is a shortcut for the current user',
-      ]);
+      throw new BadRequestException(HttpErrorMessages.USC_BAD_UID);
 
     const userId = parseInt(_userId, 10);
 
