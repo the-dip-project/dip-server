@@ -1,8 +1,9 @@
 import Flexbox from '@/view/common/components/Flexbox';
 import { ApplicationState } from '@/view/store';
+import { setModifierPurpose } from '@/view/store/actions/domain/setModifierPurpose';
 import styled from '@emotion/styled';
 import { Add, Edit } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { Button, ButtonGroup } from '@mui/material';
 import { connect, ConnectedProps } from 'react-redux';
 
 const SubmitContainer = styled(Flexbox)`
@@ -15,25 +16,36 @@ const connector = connect(
   (state: ApplicationState) => ({
     purpose: state.domain.recordModifierPurpose,
   }),
-  {},
+  {
+    setModifierPurpose,
+  },
 );
 
-function ModifierHandler({ purpose }: ConnectedProps<typeof connector>) {
+function ModifierHandler({
+  purpose,
+  setModifierPurpose,
+}: ConnectedProps<typeof connector>) {
   return (
     <SubmitContainer>
-      <Button variant="contained">
-        {purpose === 'create' ? (
-          <>
+      {purpose === 'create' ? (
+        <>
+          <Button variant="contained" size="small">
             <Add />
             &nbsp;&nbsp;add new record
-          </>
-        ) : (
-          <>
+          </Button>
+        </>
+      ) : (
+        <ButtonGroup variant="contained" size="small">
+          <Button onClick={() => setModifierPurpose('create')}>
+            <Add />
+          </Button>
+
+          <Button>
             <Edit />
             &nbsp;&nbsp;edit record
-          </>
-        )}
-      </Button>
+          </Button>
+        </ButtonGroup>
+      )}
     </SubmitContainer>
   );
 }
