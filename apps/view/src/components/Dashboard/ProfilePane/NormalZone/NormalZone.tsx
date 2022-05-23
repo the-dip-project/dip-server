@@ -3,6 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RoleNames } from '@/common/constants/roles';
 import Flexbox from '@/view/common/components/Flexbox';
+import Grid from '@/view/common/components/Grid';
 import { ApplicationState } from '@/view/store';
 import styled from '@emotion/styled';
 import {
@@ -21,11 +22,8 @@ const Root = styled(Paper)`
   padding: 2rem;
 `;
 
-const NameZoneGrid = styled.div`
+const NameZoneGrid = styled(Grid)`
   width: 100%;
-  display: grid;
-  display: -ms-grid;
-  display: -moz-grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr;
   gap: 0px 0.5rem;

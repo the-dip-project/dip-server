@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import Grid from '@/view/common/components/Grid';
 import styled from '@emotion/styled';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
@@ -10,9 +11,8 @@ import {
   InputLabel,
 } from '@mui/material';
 
-const ChangePasswordGrid = styled.div`
+const ChangePasswordGrid = styled(Grid)`
   width: 100%;
-  display: grid;
   padding-bottom: 1rem;
   display: -ms-grid;
   display: -moz-grid;
