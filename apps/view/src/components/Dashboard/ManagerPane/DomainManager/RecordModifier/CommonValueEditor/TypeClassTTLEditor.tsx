@@ -3,15 +3,48 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RCLASS } from '@/common/constants/dns-spec';
 import { EditableRecordTypes } from '@/common/constants/editable-record-type';
 import { ApplicationState } from '@/view/store';
+import { setEditingRecord } from '@/view/store/actions/domain/setEditingRecord';
 import {
   FilledInput,
   FormControl,
   FormGroup,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
+  Theme,
 } from '@mui/material';
-import { setEditingRecord } from '@/view/store/actions/domain/setEditingRecord';
+import { styled } from '@mui/styles';
+
+const WrappedFormGroup = styled(FormGroup)(() => ({
+  whiteSpace: 'normal',
+}));
+
+const TypeForm = styled(FormControl)(({ theme }: { theme: Theme }) => ({
+  width: '20%',
+  marginRight: '1rem',
+  [theme.breakpoints.down('md')]: {
+    width: '40%',
+  },
+}));
+
+const ClassForm = styled(FormControl)(({ theme }: { theme: Theme }) => ({
+  width: '15%',
+  marginRight: '1rem',
+  [theme.breakpoints.down('md')]: {
+    marginRight: '0',
+    width: 'calc(60% - 1rem + 0.02px)',
+  },
+}));
+
+const TTLForm = styled(FormControl)(({ theme }: { theme: Theme }) => ({
+  flex: 1,
+  [theme.breakpoints.down('md')]: {
+    marginTop: '1rem',
+    flex: 'auto',
+    width: '100%',
+  },
+}));
 
 const connector = connect(
   (state: ApplicationState) => ({
@@ -33,15 +66,12 @@ function TypeClassTTLEditor({
   const handleTTLChange = (event) => {
     const ttl = Number(event.target.value);
     if (Number.isNaN(ttl)) return;
-    setEditingRecord({ ttl });
+    setEditingRecord({ ttl: ~~ttl });
   };
 
   return (
-    <FormGroup row style={{ marginBottom: '1rem' }}>
-      <FormControl
-        variant="filled"
-        style={{ minWidth: '6.5rem', width: '20%', marginRight: '1rem' }}
-      >
+    <WrappedFormGroup row style={{ marginBottom: '1rem' }}>
+      <TypeForm variant="filled">
         <InputLabel>Record type</InputLabel>
 
         <Select
@@ -56,24 +86,24 @@ function TypeClassTTLEditor({
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </TypeForm>
 
-      <FormControl
-        variant="filled"
-        disabled
-        style={{ minWidth: '4rem', width: '15%', marginRight: '1rem' }}
-      >
+      <ClassForm variant="filled" disabled>
         <InputLabel>Class</InputLabel>
 
         <FilledInput type="text" value={RCLASS[rrClass as any]} />
-      </FormControl>
+      </ClassForm>
 
-      <FormControl variant="filled" style={{ flex: 1 }}>
+      <TTLForm variant="filled">
         <InputLabel>Time to live (TTL)</InputLabel>
 
         <FilledInput type="number" value={rrTtl} onChange={handleTTLChange} />
-      </FormControl>
-    </FormGroup>
+
+        <FormHelperText>
+          TTL must be an integer, after-dot will be omitted.
+        </FormHelperText>
+      </TTLForm>
+    </WrappedFormGroup>
   );
 }
 
