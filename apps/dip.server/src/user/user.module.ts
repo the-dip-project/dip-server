@@ -1,8 +1,7 @@
 import { Repository } from 'typeorm';
 
 import { UserEntity } from '@/common/entities';
-import { byMinutes } from '@/common/helpers/timespan';
-import { CacheModule, Logger, Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 
@@ -10,11 +9,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [
-    ConfigModule,
-    TypeOrmModule.forFeature([UserEntity]),
-    CacheModule.register({ ttl: byMinutes(2) }),
-  ],
+  imports: [ConfigModule, TypeOrmModule.forFeature([UserEntity])],
   providers: [UserService],
   controllers: [UserController],
 })

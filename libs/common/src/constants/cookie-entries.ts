@@ -1,4 +1,4 @@
 export enum CookieEntries {
-  REQUEST_ID = 'rid',
+  QUESTION_CHECK = 'lqc',
   AUTH_TOKEN = 'auth',
 }

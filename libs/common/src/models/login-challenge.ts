@@ -1,6 +1,11 @@
-export type LoginChallenge = {
-  requestId: string;
+export type LoginQuestionCheckBody = {
   question: string;
-  answer: string;
-  presignedToken: string;
+  exp: number;
+  userId: number;
+};
+
+export type LoginChallenge = {
+  question: string;
+  questionCheckBody: LoginQuestionCheckBody;
+  questionCheck: string;
 };

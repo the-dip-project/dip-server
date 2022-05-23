@@ -18,8 +18,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  NotAcceptableException,
   NotFoundException,
+  NotImplementedException,
   Param,
   Post,
   Query,
@@ -40,14 +40,24 @@ export class UserController {
 
   @Get('/login')
   public async getQuestion(
-    @Cookies(CookieEntries.REQUEST_ID) rid: string,
+    @Res({ passthrough: true }) res: Response,
     @Query() { username }: GetQuestionQueryDTO,
   ): Promise<ResponseDTO<string>> {
     const user = await this.userService.getUserByUsername(username);
 
     if (!user) throw new NotFoundException('Username not found');
 
-    const { question } = await this.userService.generateChallenge(rid, user);
+    const { question, questionCheck, questionCheckBody } =
+      await this.userService.generateChallenge(user);
+
+    res.cookie(CookieEntries.QUESTION_CHECK, questionCheck, {
+      httpOnly: true,
+      signed:
+        this.configService.get<Environments>(ConfigKeys.ENVIRONMENT) ===
+        Environments.PRODUCTION,
+      expires: new Date(questionCheckBody.exp),
+      sameSite: 'strict',
+    });
 
     return new ResponseDTO(HttpStatus.OK, [], question);
   }
@@ -55,11 +65,16 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   public async login(
-    @Cookies(CookieEntries.REQUEST_ID) rid: string,
     @Res({ passthrough: true }) res: Response,
+    @Cookies(CookieEntries.QUESTION_CHECK) questionCheck: string,
     @Body() { answer }: LoginBodyDTO,
   ): Promise<ResponseDTO<void>> {
-    const validation = await this.userService.validateAnswer(rid, answer);
+    if (!questionCheck) throw new BadRequestException('Question check missing');
+
+    const validation = await this.userService.validateAnswer(
+      questionCheck,
+      answer,
+    );
 
     if (typeof validation === 'string') {
       res.cookie(CookieEntries.AUTH_TOKEN, validation, {
@@ -71,15 +86,29 @@ export class UserController {
         sameSite: 'strict',
       });
 
+      res.clearCookie(CookieEntries.QUESTION_CHECK);
+
       return new ResponseDTO(HttpStatus.OK, []);
     }
 
     switch (validation) {
-      case AnswerValidationErrors.NOT_FOUND:
-        throw new NotFoundException('Challenge not found');
+      case AnswerValidationErrors.NOT_DECODABLE:
+        throw new BadRequestException('Question check can not be decoded');
 
-      case AnswerValidationErrors.INVALID:
-        throw new NotAcceptableException('Invalid or wrong answer');
+      case AnswerValidationErrors.NOT_VERIFIABLE:
+        throw new BadRequestException('Question check was incorectly signed');
+
+      case AnswerValidationErrors.USER_NOT_FOUND:
+        throw new NotFoundException('User not found');
+
+      case AnswerValidationErrors.EXPIRED:
+        throw new BadRequestException('Question check has expired');
+
+      case AnswerValidationErrors.WRONG:
+        throw new BadRequestException('Answer is incorrect');
+
+      default:
+        throw new NotImplementedException('Unknown error');
     }
   }
 
