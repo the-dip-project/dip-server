@@ -6,6 +6,7 @@ import { Cookies } from '@/common/decorators/cookies';
 import { CurrentUser } from '@/common/decorators/current-user';
 import { UserEntity } from '@/common/entities';
 import { byHours } from '@/common/helpers/timespan';
+import { HttpErrorMessages } from '@/common/messages/http-error';
 import { ResponseDTO } from '@/common/models/dto/response.dto';
 import { GetQuestionQueryDTO } from '@/common/models/dto/user/get-question.query.dto';
 import { GetUserParamDTO } from '@/common/models/dto/user/get-user.param.dto';
@@ -30,7 +31,6 @@ import { ConfigService } from '@nestjs/config';
 
 import { ConfigKeys } from '../base/config.module';
 import { AnswerValidationErrors, UserService } from './user.service';
-import { HttpErrorMessages } from '@/common/messages/http-error';
 
 @Controller('/api/user')
 export class UserController {

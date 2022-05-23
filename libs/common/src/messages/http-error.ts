@@ -3,19 +3,23 @@
  */
 
 export const HttpErrorMessages = {
-  USC_USERNAME_NOT_FOUND: ['Username not found'],
-  USC_QUESTION_CHECK_MISSING: ['Question check missing'],
-  USC_QUESTION_CHECK_CAN_NOT_BE_DECODED: ['Question can not be decoded'],
-  USC_QUESTION_CHECK_WRONG_SIGNATURE: ['Question check was incorectly signed'],
-  USC_USER_NOT_FOUND: ['User not found'],
-  USC_QUESTION_CHECK_EXPIRED: ['Question check has expired'],
-  USC_ANSWER_IS_INCORRECT: ['Answer is incorrect'],
-  USC_AUTH_REQUIRED: ['This action requires authenticated access'],
+  USC_USERNAME_NOT_FOUND: ['username not found'],
+  USC_QUESTION_CHECK_MISSING: ['question check missing'],
+  USC_QUESTION_CHECK_CAN_NOT_BE_DECODED: ['question can not be decoded'],
+  USC_QUESTION_CHECK_WRONG_SIGNATURE: ['question check was incorectly signed'],
+  USC_USER_NOT_FOUND: ['user not found'],
+  USC_QUESTION_CHECK_EXPIRED: ['question check has expired'],
+  USC_ANSWER_IS_INCORRECT: ['answer is incorrect'],
+  USC_AUTH_REQUIRED: ['this action requires authenticated access'],
   USC_BAD_UID: [
     'userId can be either',
     '"me" or a number',
     '"me" is a shortcut for the current user',
   ],
 
-  $_UNKNOWN_ERROR: ['Unknown error'],
+  AGM_AUTH_TOKEN_NOT_FOUND: ['required auth token not found'],
+  AGM_INVALID_TOKEN: ['invalid token'],
+  AGM_CARRIED_USER_NOT_FOUND: ["user in token's payload not found"],
+
+  $_UNKNOWN_ERROR: ['unknown error'],
 };

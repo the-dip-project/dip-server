@@ -5,6 +5,7 @@ import { CookieEntries } from '@/common/constants/cookie-entries';
 import { Environments } from '@/common/constants/environments';
 import { UserEntity } from '@/common/entities';
 import { decode, verify } from '@/common/helpers/jwt';
+import { HttpErrorMessages } from '@/common/messages/http-error';
 import { AuthTokenPayload } from '@/common/models/auth-token-payload';
 import {
   BadRequestException,
@@ -34,7 +35,7 @@ export class AuthGuardMiddleware implements NestMiddleware {
       req[isProd ? 'signedCookies' : 'cookies'][CookieEntries.AUTH_TOKEN];
 
     if (typeof token !== 'string')
-      throw new BadRequestException('required auth token not found');
+      throw new BadRequestException(HttpErrorMessages.AGM_AUTH_TOKEN_NOT_FOUND);
 
     let id: number;
 
@@ -46,10 +47,10 @@ export class AuthGuardMiddleware implements NestMiddleware {
 
       if (typeof userId !== 'number' && typeof level !== 'number') {
         res.clearCookie(CookieEntries.AUTH_TOKEN);
-        throw new BadRequestException('Invalid token');
+        throw new BadRequestException(HttpErrorMessages.AGM_INVALID_TOKEN);
       }
     } catch (err) {
-      throw new BadRequestException('Invalid token');
+      throw new BadRequestException(HttpErrorMessages.AGM_INVALID_TOKEN);
     }
 
     const user = await this.userRepository.findOne({
@@ -58,14 +59,14 @@ export class AuthGuardMiddleware implements NestMiddleware {
 
     if (!user) {
       res.clearCookie(CookieEntries.AUTH_TOKEN);
-      throw new NotFoundException("User in token's payload not found");
+      throw new NotFoundException(HttpErrorMessages.AGM_CARRIED_USER_NOT_FOUND);
     }
 
     try {
       await verify(token, user.secret);
     } catch (err) {
       res.clearCookie(CookieEntries.AUTH_TOKEN);
-      throw new BadRequestException('Invalid token');
+      throw new BadRequestException(HttpErrorMessages.AGM_INVALID_TOKEN);
     }
 
     req.user = user;
