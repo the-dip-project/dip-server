@@ -23,6 +23,11 @@ const Header = styled(Flexbox)`
   justify-content: space-between;
 `;
 
+const TableContainer = styled.div`
+  overflow-x: auto;
+  width: 100%;
+`;
+
 const connector = connect(
   (state: ApplicationState) => ({
     records: state.domain.records,
@@ -48,73 +53,77 @@ function RecordsList({ records }: ConnectedProps<typeof connector>) {
         </Header>
       </Toolbar>
 
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
-              <Checkbox
-                checked={
-                  selections.size !== 0 && selections.size === records.length
-                }
-                indeterminate={
-                  selections.size !== 0 && selections.size !== records.length
-                }
-                onChange={(e) =>
-                  e.target.checked
-                    ? setSelections(new Set(records.map((record) => record.id)))
-                    : setSelections(new Set())
-                }
-              />
-            </TableCell>
-
-            <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
-              Host
-            </TableCell>
-
-            <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
-              Type
-            </TableCell>
-
-            <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
-              Class
-            </TableCell>
-
-            <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
-              TTL
-            </TableCell>
-
-            <TableCell>Value</TableCell>
-
-            <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }} />
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {records.map((record) => (
-            <RecordsItem
-              key={`record/${record.id}`}
-              record={record}
-              selected={selections.has(record.id)}
-              onSelectionChanged={(selected) => {
-                if (selected) selections.add(record.id);
-                else selections.delete(record.id);
-
-                setSelections(new Set(selections));
-              }}
-            />
-          ))}
-
-          {records.length === 0 && (
+      <TableContainer>
+        <Table size="small">
+          <TableHead>
             <TableRow>
-              <TableCell colSpan={7} align="center">
-                <Typography variant="body1" color="gray" fontWeight="500">
-                  No records found
-                </Typography>
+              <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
+                <Checkbox
+                  checked={
+                    selections.size !== 0 && selections.size === records.length
+                  }
+                  indeterminate={
+                    selections.size !== 0 && selections.size !== records.length
+                  }
+                  onChange={(e) =>
+                    e.target.checked
+                      ? setSelections(
+                          new Set(records.map((record) => record.id)),
+                        )
+                      : setSelections(new Set())
+                  }
+                />
               </TableCell>
+
+              <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
+                Host
+              </TableCell>
+
+              <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
+                Type
+              </TableCell>
+
+              <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
+                Class
+              </TableCell>
+
+              <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
+                TTL
+              </TableCell>
+
+              <TableCell>Value</TableCell>
+
+              <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }} />
             </TableRow>
-          )}
-        </TableBody>
-      </Table>
+          </TableHead>
+
+          <TableBody>
+            {records.map((record) => (
+              <RecordsItem
+                key={`record/${record.id}`}
+                record={record}
+                selected={selections.has(record.id)}
+                onSelectionChanged={(selected) => {
+                  if (selected) selections.add(record.id);
+                  else selections.delete(record.id);
+
+                  setSelections(new Set(selections));
+                }}
+              />
+            ))}
+
+            {records.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  <Typography variant="body1" color="gray" fontWeight="500">
+                    No records found
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 }

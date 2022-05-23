@@ -1,5 +1,6 @@
 import { RCLASS, RTYPE, TYPE } from '@/common/constants/dns-spec';
 import { RecordEntity } from '@/common/entities';
+import styled from '@emotion/styled';
 import { Edit } from '@mui/icons-material';
 import { Checkbox, IconButton, TableCell, TableRow } from '@mui/material';
 
@@ -8,6 +9,10 @@ interface IProps {
   selected: boolean;
   onSelectionChanged: (selected: boolean) => void;
 }
+
+const NowrapCell = styled(TableCell)`
+  white-space: nowrap;
+`;
 
 function parseRecordData(record: RecordEntity): string {
   switch (record.type) {
@@ -37,7 +42,7 @@ function RecordsItem({ record, selected, onSelectionChanged }: IProps) {
       <TableCell align="center">{RTYPE[record.type]}</TableCell>
       <TableCell align="center">{RCLASS[record.class]}</TableCell>
       <TableCell align="center">{record.ttl}</TableCell>
-      <TableCell>{parseRecordData(record)}</TableCell>
+      <NowrapCell>{parseRecordData(record)}</NowrapCell>
 
       <TableCell style={{ borderLeft: '1px solid lightgray' }}>
         <IconButton color="primary" size="small">
