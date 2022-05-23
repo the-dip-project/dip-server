@@ -16,10 +16,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/styles';
 
-const WrappedFormGroup = styled(FormGroup)(() => ({
-  whiteSpace: 'normal',
-}));
-
 const TypeForm = styled(FormControl)(({ theme }: { theme: Theme }) => ({
   width: '20%',
   marginRight: '1rem',
@@ -70,7 +66,7 @@ function TypeClassTTLEditor({
   };
 
   return (
-    <WrappedFormGroup row style={{ marginBottom: '1rem' }}>
+    <FormGroup row style={{ marginBottom: '1rem' }}>
       <TypeForm variant="filled">
         <InputLabel>Record type</InputLabel>
 
@@ -103,7 +99,7 @@ function TypeClassTTLEditor({
           TTL must be an integer, after-dot will be omitted.
         </FormHelperText>
       </TTLForm>
-    </WrappedFormGroup>
+    </FormGroup>
   );
 }
 
