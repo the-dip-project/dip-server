@@ -26,6 +26,8 @@ PaneRegister.getInstance().register(meta);
 
 const Root = styled.div`
   padding: 2rem;
+  height: 100%;
+  overflow-y: auto;
 `;
 
 const connector = connect(() => ({}), {
