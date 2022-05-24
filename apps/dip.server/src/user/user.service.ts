@@ -153,4 +153,11 @@ export class UserService {
   public reduceUser(user: UserEntity): PublicUser {
     return _omit(user, 'secret', 'password');
   }
+
+  public async generateNewSecret(userId: number): Promise<void> {
+    await this.userRepository.update(
+      { id: userId },
+      { secret: createHash('sha256').update(v4()).digest('hex') },
+    );
+  }
 }

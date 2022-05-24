@@ -18,6 +18,7 @@ export const HttpErrorMessages = {
     '"me" or a number',
     '"me" is a shortcut for the current user',
   ],
+  USC_ESCALATION_REQUIRED: ['this action requires escalated access'],
 
   AGM_AUTH_TOKEN_NOT_FOUND: ['required auth token not found'],
   AGM_INVALID_TOKEN: ['invalid token'],

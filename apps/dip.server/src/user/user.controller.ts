@@ -13,6 +13,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -171,5 +172,18 @@ export class UserController {
       [],
       this.userService.reduceUser(await this.userService.getUserById(userId)),
     );
+  }
+
+  @Post('/me/secret')
+  public async generateNewSecret(
+    @CurrentUser({ escalation: true })
+    user: UserEntity & { escalatedUntil?: number },
+  ): Promise<ResponseDTO<void>> {
+    if (!user.escalatedUntil || user.escalatedUntil < Date.now())
+      throw new ForbiddenException(HttpErrorMessages.USC_ESCALATION_REQUIRED);
+
+    await this.userService.generateNewSecret(user.id);
+
+    return new ResponseDTO(HttpStatus.CREATED, []);
   }
 }
