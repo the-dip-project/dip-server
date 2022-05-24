@@ -1,3 +1,7 @@
+import { useState } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+
+import CustomScrollbar from '@/view/common/components/CustomScrollbar';
 import Flexbox from '@/view/common/components/Flexbox';
 import { ApplicationState } from '@/view/store';
 import styled from '@emotion/styled';
@@ -13,8 +17,7 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+
 import RecordsItem from './RecordsItem/RecordsItem';
 
 const Header = styled(Flexbox)`
@@ -23,7 +26,7 @@ const Header = styled(Flexbox)`
   justify-content: space-between;
 `;
 
-const TableContainer = styled.div`
+const TableContainer = styled(CustomScrollbar)`
   overflow-x: auto;
   width: 100%;
 `;
