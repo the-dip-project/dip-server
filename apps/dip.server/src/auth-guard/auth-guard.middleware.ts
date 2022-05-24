@@ -17,23 +17,32 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { ConfigKeys } from '../base/config.module';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthGuardMiddleware implements NestMiddleware {
+  private readonly isProd: boolean;
+  private readonly authTokenExpiration: number;
+
   public constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly configService: ConfigService,
-  ) {}
-
-  async use(req: Request, res: Response, next: NextFunction) {
-    const isProd =
+    private readonly userService: UserService,
+  ) {
+    this.isProd =
       this.configService.get<Environments>(ConfigKeys.ENVIRONMENT) ===
       Environments.PRODUCTION;
+    this.authTokenExpiration = this.configService.get<number>(
+      ConfigKeys.AUTH_TOKEN_EXP,
+    );
+  }
 
-    const token =
-      req[isProd ? 'signedCookies' : 'cookies'][CookieEntries.AUTH_TOKEN];
-
+  private async verifyToken(
+    entry: CookieEntries,
+    token: string,
+    res: Response,
+  ): Promise<UserEntity> {
     if (typeof token !== 'string')
       throw new BadRequestException(HttpErrorMessages.AGM_AUTH_TOKEN_NOT_FOUND);
 
@@ -46,7 +55,7 @@ export class AuthGuardMiddleware implements NestMiddleware {
       id = userId;
 
       if (typeof userId !== 'number' && typeof level !== 'number') {
-        res.clearCookie(CookieEntries.AUTH_TOKEN);
+        res.clearCookie(entry);
         throw new BadRequestException(HttpErrorMessages.AGM_INVALID_TOKEN);
       }
     } catch (err) {
@@ -58,16 +67,50 @@ export class AuthGuardMiddleware implements NestMiddleware {
     });
 
     if (!user) {
-      res.clearCookie(CookieEntries.AUTH_TOKEN);
+      res.clearCookie(entry);
       throw new NotFoundException(HttpErrorMessages.AGM_CARRIED_USER_NOT_FOUND);
     }
 
     try {
       await verify(token, user.secret);
     } catch (err) {
-      res.clearCookie(CookieEntries.AUTH_TOKEN);
+      res.clearCookie(entry);
       throw new BadRequestException(HttpErrorMessages.AGM_INVALID_TOKEN);
     }
+
+    if (entry === CookieEntries.AUTH_TOKEN) {
+      res.cookie(entry, await this.userService.generateToken(false, user), {
+        httpOnly: true,
+        signed: this.isProd,
+        expires: new Date(Date.now() + this.authTokenExpiration),
+        sameSite: 'strict',
+      });
+    }
+
+    return user;
+  }
+
+  public async use(req: Request, res: Response, next: NextFunction) {
+    try {
+      const token =
+        req[this.isProd ? 'signedCookies' : 'cookies'][
+          CookieEntries.ESCALATED_AUTH_TOKEN
+        ];
+
+      const user = await this.verifyToken(
+        CookieEntries.ESCALATED_AUTH_TOKEN,
+        token,
+        res,
+      );
+
+      req.user = user;
+      return next();
+    } catch (err) {}
+
+    const token =
+      req[this.isProd ? 'signedCookies' : 'cookies'][CookieEntries.AUTH_TOKEN];
+
+    const user = await this.verifyToken(CookieEntries.AUTH_TOKEN, token, res);
 
     req.user = user;
     next();

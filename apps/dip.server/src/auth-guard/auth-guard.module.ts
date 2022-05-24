@@ -4,12 +4,13 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DomainController } from '../domain/domain.controller';
+import { UserModule } from '../user/user.module';
+import { UserService } from '../user/user.service';
 import { AuthGuardMiddleware } from './auth-guard.middleware';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity]), ConfigModule],
-  providers: [AuthGuardMiddleware],
-  exports: [AuthGuardMiddleware],
+  imports: [TypeOrmModule.forFeature([UserEntity]), ConfigModule, UserModule],
+  providers: [AuthGuardMiddleware, UserService],
 })
 export class AuthGuardModule {
   public configure(consumer: MiddlewareConsumer) {
