@@ -105,7 +105,7 @@ export class AuthGuardMiddleware implements NestMiddleware {
       );
 
       req.user = user;
-      req.escalatedUntil = expiration;
+      req.escalatedUntil = expiration * 1000;
       return next();
     } catch (err) {}
 
