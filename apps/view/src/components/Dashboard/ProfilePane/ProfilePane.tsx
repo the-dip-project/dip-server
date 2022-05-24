@@ -26,6 +26,11 @@ const Root = styled.div`
   overflow-x: hidden;
 `;
 
+const ContentContainer = styled.div`
+  width: 100%;
+  max-width: 50rem;
+`;
+
 function ProfilePane() {
   const container = useSelector('#main')[0];
 
@@ -40,15 +45,13 @@ function ProfilePane() {
 
         <br />
 
-        <NormalZone />
+        <ContentContainer>
+          <NormalZone />
 
-        <br />
+          <br />
 
-        <Divider />
-
-        <br />
-
-        <DangerZone />
+          <DangerZone />
+        </ContentContainer>
       </Root>
     </Portal>
   );
