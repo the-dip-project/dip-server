@@ -13,4 +13,5 @@ export enum ActionTypes {
   DOMAIN__DELETE_DOMAINS = 0x16,
 
   CONFIRM__SET_CALLBACK = 0x20,
+  CONFIRM__SET_SU_CALLBACK = 0x21,
 }
