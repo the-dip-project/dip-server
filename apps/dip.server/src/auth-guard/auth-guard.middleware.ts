@@ -42,17 +42,18 @@ export class AuthGuardMiddleware implements NestMiddleware {
     entry: CookieEntries,
     token: string,
     res: Response,
-  ): Promise<UserEntity> {
+  ): Promise<[UserEntity, number]> {
     if (typeof token !== 'string')
       throw new BadRequestException(HttpErrorMessages.AGM_AUTH_TOKEN_NOT_FOUND);
 
-    let id: number;
+    let id: number, expiration: number;
 
     try {
-      const { userId, level } = (await decode<AuthTokenPayload>(
+      const { userId, level, exp } = (await decode<AuthTokenPayload>(
         token,
-      )) as AuthTokenPayload;
+      )) as AuthTokenPayload & { exp: number };
       id = userId;
+      expiration = exp;
 
       if (typeof userId !== 'number' && typeof level !== 'number') {
         res.clearCookie(entry);
@@ -87,7 +88,7 @@ export class AuthGuardMiddleware implements NestMiddleware {
       });
     }
 
-    return user;
+    return [user, expiration];
   }
 
   public async use(req: Request, res: Response, next: NextFunction) {
@@ -97,20 +98,21 @@ export class AuthGuardMiddleware implements NestMiddleware {
           CookieEntries.ESCALATED_AUTH_TOKEN
         ];
 
-      const user = await this.verifyToken(
+      const [user, expiration] = await this.verifyToken(
         CookieEntries.ESCALATED_AUTH_TOKEN,
         token,
         res,
       );
 
       req.user = user;
+      req.escalatedUntil = expiration;
       return next();
     } catch (err) {}
 
     const token =
       req[this.isProd ? 'signedCookies' : 'cookies'][CookieEntries.AUTH_TOKEN];
 
-    const user = await this.verifyToken(CookieEntries.AUTH_TOKEN, token, res);
+    const [user] = await this.verifyToken(CookieEntries.AUTH_TOKEN, token, res);
 
     req.user = user;
     next();
