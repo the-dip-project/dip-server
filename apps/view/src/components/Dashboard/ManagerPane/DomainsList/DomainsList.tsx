@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
 
+import CustomScrollbar from '@/view/common/components/CustomScrollbar';
 import Flexbox from '@/view/common/components/Flexbox';
 import { ApplicationState } from '@/view/store';
 import styled from '@emotion/styled';
@@ -32,28 +33,9 @@ const Root = styled(Paper)`
   }
 `;
 
-const TableContainer = styled.div`
+const TableContainer = styled(CustomScrollbar)`
   overflow-x: auto;
   width: 100%;
-  /* width */
-  &::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  /* Track */
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  /* Handle */
-  &::-webkit-scrollbar-thumb {
-    background: #888;
-  }
-
-  /* Handle on hover */
-  &::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
 `;
 
 const Overhead = styled(Flexbox)`

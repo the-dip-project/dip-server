@@ -3,10 +3,12 @@ import { useMemo } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
 
+import CustomScrollbar from '@/view/common/components/CustomScrollbar';
 import NowrapTypo from '@/view/common/components/NowrapTypo';
 import TransparentAvatar from '@/view/common/components/TransparentAvatar';
 import { useBreakpoints } from '@/view/hooks/useBreakpoints';
 import { ApplicationState } from '@/view/store';
+import styled from '@emotion/styled';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import {
   Divider,
@@ -65,34 +67,16 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: '100%',
     },
   },
-  list: {
-    flex: 1,
-    overflowY: 'auto',
-    overflowX: 'hidden',
-    /* width */
-    '&::-webkit-scrollbar': {
-      width: '4px',
-    },
-
-    /* Track */
-    '&::-webkit-scrollbar-track': {
-      background: '#f1f1f1',
-    },
-
-    /* Handle */
-    '&::-webkit-scrollbar-thumb': {
-      background: '#888',
-    },
-
-    /* Handle on hover */
-    '&::-webkit-scrollbar-thumb:hover': {
-      background: '#555',
-    },
-  },
   item: {
     color: '#3c3c3c',
   },
 }));
+
+const CustomList = styled(CustomScrollbar)`
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+`;
 
 const connector = connect(
   (state: ApplicationState) => ({
@@ -139,7 +123,7 @@ function Menu({
 
       <Divider />
 
-      <List className={classes.list}>
+      <CustomList>
         {items.map((item) => (
           <ListItemButton
             key={`menu#${item.path}`}
@@ -168,7 +152,7 @@ function Menu({
             />
           </ListItemButton>
         ))}
-      </List>
+      </CustomList>
 
       <Divider />
 
