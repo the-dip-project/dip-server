@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { List, Paper, Typography } from '@mui/material';
 
 import DeleteAccountAction from './DeleteAccountAction/DeleteAccountAction';
-import DeleteAllDomainsAction from './DeleteAllDomainsAction/DeleteAllDomainsAction';
 import GenerateNewSecretAction from './GenerateNewSecretAction/GenerateNewSecretAction';
 
 const Root = styled(Paper)`
@@ -17,8 +16,6 @@ function DangerZone() {
         <GenerateNewSecretAction />
 
         <DeleteAccountAction />
-
-        <DeleteAllDomainsAction />
       </List>
 
       <Typography

@@ -20,7 +20,7 @@ function DeleteAccountAction({ role }: ConnectedProps<typeof connector>) {
   const disabled = role === 0;
 
   return (
-    <ListItem disabled={disabled} divider>
+    <ListItem disabled={disabled}>
       <ListItemText
         primary={
           <Typography
