@@ -23,6 +23,7 @@ import RecordsList from './RecordsList/RecordsList';
 const Root = styled(Paper)`
   padding: 1rem 1rem;
   margin-top: 2rem;
+  max-width: 50rem;
   &.hide {
     display: none;
     margin: 0;
