@@ -150,7 +150,8 @@ export class UserController {
   @Get('/:userId')
   public async getUser(
     @Param() { userId: _userId }: GetUserParamDTO,
-    @CurrentUser() user: UserEntity,
+    @CurrentUser({ escalation: true })
+    user: UserEntity & { escalatedUntil: number },
   ): Promise<ResponseDTO<PublicUser>> {
     if (!user)
       throw new UnauthorizedException(HttpErrorMessages.USC_AUTH_REQUIRED);
@@ -166,12 +167,13 @@ export class UserController {
       throw new BadRequestException(HttpErrorMessages.USC_BAD_UID);
 
     const userId = parseInt(_userId, 10);
-
-    return new ResponseDTO(
-      HttpStatus.OK,
-      [],
-      this.userService.reduceUser(await this.userService.getUserById(userId)),
+    const result = this.userService.reduceUser(
+      await this.userService.getUserById(userId),
     );
+
+    result.escalatedUntil = user.escalatedUntil;
+
+    return new ResponseDTO(HttpStatus.OK, [], result);
   }
 
   @Post('/me/secret')
