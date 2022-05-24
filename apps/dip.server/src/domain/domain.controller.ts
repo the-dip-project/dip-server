@@ -1,4 +1,3 @@
-import { CurrentUser } from '@/common/decorators/current-user';
 import { DomainEntity, RecordEntity, UserEntity } from '@/common/entities';
 import { HttpErrorMessages } from '@/common/messages/http-error';
 import { DomainListItem } from '@/common/models/domain-list-item';
@@ -23,6 +22,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
+import { CurrentUser } from '../decorators/current-user';
 import { DomainService } from './domain.service';
 import { RecordService } from './record.service';
 

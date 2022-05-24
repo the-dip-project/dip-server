@@ -2,8 +2,6 @@ import { Response } from 'express';
 
 import { CookieEntries } from '@/common/constants/cookie-entries';
 import { Environments } from '@/common/constants/environments';
-import { Cookies } from '@/common/decorators/cookies';
-import { CurrentUser } from '@/common/decorators/current-user';
 import { UserEntity } from '@/common/entities';
 import { HttpErrorMessages } from '@/common/messages/http-error';
 import { ResponseDTO } from '@/common/models/dto/response.dto';
@@ -29,6 +27,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 
 import { ConfigKeys } from '../base/config.module';
+import { Cookies } from '../decorators/cookies';
+import { CurrentUser } from '../decorators/current-user';
 import { AnswerValidationErrors, UserService } from './user.service';
 
 @Controller('/api/user')
