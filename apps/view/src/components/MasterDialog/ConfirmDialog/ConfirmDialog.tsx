@@ -24,9 +24,9 @@ function ConfirmDialog({
   callback,
   openDialog,
 }: ConnectedProps<typeof connector>) {
-  const handleClick = (ok) => {
+  const handleClick = (accepted) => {
     openDialog(DialogContentIndex.NONE);
-    callback(ok);
+    callback(accepted);
   };
 
   return (

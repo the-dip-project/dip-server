@@ -22,6 +22,8 @@ import {
 
 import DomainAdder from './DomainAdder/DomainAdder';
 import DomainsItem from './DomainsItem/DomainsItem';
+import { confirm } from '@/view/store/actions/confirm/confirm';
+import { deleteDomains } from '@/view/store/actions/domain/deleteDomains';
 
 const Root = styled(Paper)`
   padding: 1rem 1rem;
@@ -50,12 +52,28 @@ const connector = connect(
   (state: ApplicationState) => ({
     domains: state.domain.domains,
   }),
-  {},
+  {
+    confirm,
+    deleteDomains,
+  },
 );
 
-function DomainsList({ domains }: ConnectedProps<typeof connector>) {
+function DomainsList({
+  domains,
+  confirm,
+  deleteDomains,
+}: ConnectedProps<typeof connector>) {
   const { domain: name } = useParams();
   const [selections, setSelections] = useState(new Set<number>());
+
+  const handleClick = () => {
+    confirm((accepted) => {
+      if (!accepted) return;
+
+      deleteDomains(...selections);
+      setSelections(new Set());
+    });
+  };
 
   return (
     <>
@@ -65,7 +83,12 @@ function DomainsList({ domains }: ConnectedProps<typeof connector>) {
 
       <Root className={clsx({ hide: !!name })}>
         <Overhead>
-          <Button size="small" variant="contained" color="error">
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            onClick={handleClick}
+          >
             <Delete />
             &nbsp;&nbsp;delete selected
           </Button>
