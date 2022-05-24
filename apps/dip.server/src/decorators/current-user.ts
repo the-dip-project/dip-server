@@ -1,11 +1,14 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
+interface IProps {
+  escalation: boolean;
+}
+
 export const CurrentUser = createParamDecorator(
-  (property: string, ctx: ExecutionContext) => {
+  ({ escalation }: IProps, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
 
-    if (!('user' in request)) return undefined;
-
-    return property ? request.user[property] : request.user;
+    if (!escalation) return request.user;
+    else return { ...request.user, escalatedUntil: request.escalatedUntil };
   },
 );
