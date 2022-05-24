@@ -48,6 +48,25 @@ export class UserService {
     });
   }
 
+  public async generateToken(escalated: boolean, user: UserEntity) {
+    return await sign(
+      {
+        userId: user.id,
+        level: user.role,
+        exp: ~~(
+          (Date.now() +
+            (escalated
+              ? this.configService.get<number>(
+                  ConfigKeys.ESCALATED_AUTH_TOKEN_EXP,
+                )
+              : this.configService.get<number>(ConfigKeys.AUTH_TOKEN_EXP))) /
+          1000
+        ),
+      },
+      user.secret,
+    );
+  }
+
   public async generateChallenge(user: UserEntity): Promise<LoginChallenge> {
     const challenge: LoginChallenge = {
       question: randomString(64, randomBytes(32).toString('utf-8')),
@@ -110,22 +129,7 @@ export class UserService {
 
     if (correctAnswer !== answer) return AnswerValidationErrors.WRONG;
 
-    return await sign(
-      {
-        userId,
-        level: user.role,
-        exp: ~~(
-          (Date.now() +
-            (escalate
-              ? this.configService.get<number>(
-                  ConfigKeys.ESCALATED_AUTH_TOKEN_EXP,
-                )
-              : this.configService.get<number>(ConfigKeys.AUTH_TOKEN_EXP))) /
-          1000
-        ),
-      },
-      user.secret,
-    );
+    return await this.generateToken(escalate, user);
   }
 
   public async createUser(

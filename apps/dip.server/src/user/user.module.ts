@@ -12,6 +12,7 @@ import { UserService } from './user.service';
   imports: [ConfigModule, TypeOrmModule.forFeature([UserEntity])],
   providers: [UserService],
   controllers: [UserController],
+  exports: [UserService],
 })
 export class UserModule {
   private readonly logger: Logger = new Logger(UserModule.name);
