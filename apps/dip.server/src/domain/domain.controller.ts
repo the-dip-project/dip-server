@@ -2,6 +2,7 @@ import { CurrentUser } from '@/common/decorators/current-user';
 import { DomainEntity, RecordEntity, UserEntity } from '@/common/entities';
 import { HttpErrorMessages } from '@/common/messages/http-error';
 import { DomainListItem } from '@/common/models/domain-list-item';
+import { DeleteDomainsBodyDTO } from '@/common/models/dto/domain/delete-domains.body.dto';
 import { GetAllDomainsQueryDTO } from '@/common/models/dto/domain/get-all-domains.query.dto';
 import { GetDomainParamDTO } from '@/common/models/dto/domain/get-domain.param.dto';
 import { GetRecordsParamDTO } from '@/common/models/dto/domain/get-records.param.dto';
@@ -11,6 +12,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   HttpStatus,
@@ -115,6 +117,25 @@ export class DomainController {
       throw new ForbiddenException(HttpErrorMessages.DMC_DOMAIN_ALREADY_EXISTS);
 
     await this.domainService.registerDomain(user.id, domain);
+
+    return new ResponseDTO(HttpStatus.OK, []);
+  }
+
+  @Delete()
+  public async deleteDomains(
+    @CurrentUser() user: UserEntity,
+    @Body() { ids }: DeleteDomainsBodyDTO,
+  ): Promise<ResponseDTO<void>> {
+    const domains = await this.domainService.getDomainsByIds(ids);
+
+    for (const domain of domains) {
+      if (domain.ownerId !== user.id)
+        throw new ForbiddenException(
+          HttpErrorMessages.DMC_DOMAIN_BELONGS_TO_OTHER_USER,
+        );
+    }
+
+    await this.domainService.deleteDomains(ids);
 
     return new ResponseDTO(HttpStatus.OK, []);
   }

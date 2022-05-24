@@ -63,6 +63,12 @@ export function reduce(state = initialState, action: AnyAction): DomainState {
         editingRecord: { ...defaultRecord, ...action.payload },
       };
 
+    case ActionTypes.DOMAIN__DELETE_DOMAINS:
+      return {
+        ...state,
+        domains: state.domains.filter(({ id }) => !action.payload.includes(id)),
+      };
+
     default:
       return state;
   }

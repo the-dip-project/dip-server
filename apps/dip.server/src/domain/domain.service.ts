@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { DomainEntity } from '@/common/entities';
 import { Injectable } from '@nestjs/common';
@@ -29,6 +29,12 @@ export class DomainService {
     });
   }
 
+  public async getDomainsByIds(ids: number[]): Promise<DomainEntity[]> {
+    return this.domainRepository.find({
+      where: { id: In(ids) },
+    });
+  }
+
   public async registerDomain(
     userId: number,
     domain: string,
@@ -40,5 +46,9 @@ export class DomainService {
 
     return (await this.domainRepository.insert(newDomain))
       .generatedMaps[0] as DomainEntity;
+  }
+
+  public async deleteDomains(ids: number[]): Promise<void> {
+    await this.domainRepository.delete({ id: In(ids) });
   }
 }
