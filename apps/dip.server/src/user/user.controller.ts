@@ -5,7 +5,6 @@ import { Environments } from '@/common/constants/environments';
 import { Cookies } from '@/common/decorators/cookies';
 import { CurrentUser } from '@/common/decorators/current-user';
 import { UserEntity } from '@/common/entities';
-import { byHours } from '@/common/helpers/timespan';
 import { HttpErrorMessages } from '@/common/messages/http-error';
 import { ResponseDTO } from '@/common/models/dto/response.dto';
 import { GetQuestionQueryDTO } from '@/common/models/dto/user/get-question.query.dto';
@@ -69,7 +68,7 @@ export class UserController {
   public async login(
     @Res({ passthrough: true }) res: Response,
     @Cookies(CookieEntries.QUESTION_CHECK) questionCheck: string,
-    @Body() { answer }: LoginBodyDTO,
+    @Body() { answer, escalate }: LoginBodyDTO,
   ): Promise<ResponseDTO<void>> {
     if (!questionCheck)
       throw new BadRequestException(
@@ -79,17 +78,31 @@ export class UserController {
     const validation = await this.userService.validateAnswer(
       questionCheck,
       answer,
+      !escalate,
     );
 
     if (typeof validation === 'string') {
-      res.cookie(CookieEntries.AUTH_TOKEN, validation, {
-        httpOnly: true,
-        signed:
-          this.configService.get<Environments>(ConfigKeys.ENVIRONMENT) ===
-          Environments.PRODUCTION,
-        expires: new Date(Date.now() + byHours(5)),
-        sameSite: 'strict',
-      });
+      res.cookie(
+        escalate
+          ? CookieEntries.ESCALATED_AUTH_TOKEN
+          : CookieEntries.AUTH_TOKEN,
+        validation,
+        {
+          httpOnly: true,
+          signed:
+            this.configService.get<Environments>(ConfigKeys.ENVIRONMENT) ===
+            Environments.PRODUCTION,
+          expires: new Date(
+            Date.now() +
+              (escalate
+                ? this.configService.get<number>(
+                    ConfigKeys.ESCALATED_AUTH_TOKEN_EXP,
+                  )
+                : this.configService.get<number>(ConfigKeys.AUTH_TOKEN_EXP)),
+          ),
+          sameSite: 'strict',
+        },
+      );
 
       res.clearCookie(CookieEntries.QUESTION_CHECK);
 

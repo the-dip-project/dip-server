@@ -17,6 +17,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import _omit = require('lodash/omit');
 import { byMinutes } from '@/common/helpers/timespan';
 import { decode, verify } from '@/common/helpers/jwt';
+import { ConfigService } from '@nestjs/config';
+import { ConfigKeys } from '../base/config.module';
 
 export enum AnswerValidationErrors {
   NOT_DECODABLE = 0,
@@ -29,6 +31,7 @@ export enum AnswerValidationErrors {
 @Injectable()
 export class UserService {
   public constructor(
+    private readonly configService: ConfigService,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
@@ -71,6 +74,7 @@ export class UserService {
   public async validateAnswer(
     questionCheck: string,
     answer: string,
+    escalate: boolean,
   ): Promise<AnswerValidationErrors | string> {
     let questionCheckBody: LoginQuestionCheckBody;
 
@@ -110,6 +114,15 @@ export class UserService {
       {
         userId,
         level: user.role,
+        exp: ~~(
+          (Date.now() +
+            (escalate
+              ? this.configService.get<number>(
+                  ConfigKeys.ESCALATED_AUTH_TOKEN_EXP,
+                )
+              : this.configService.get<number>(ConfigKeys.AUTH_TOKEN_EXP))) /
+          1000
+        ),
       },
       user.secret,
     );

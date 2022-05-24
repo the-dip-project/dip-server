@@ -4,6 +4,7 @@ import * as Joi from 'joi';
 import { join, resolve } from 'path';
 
 import { Environments } from '@/common/constants/environments';
+import { byHours, byMinutes } from '@/common/helpers/timespan';
 import {
   FallbackAddress,
   FallbackProtocols,
@@ -24,6 +25,10 @@ export type Schema = {
     udp: number;
     tcp: number;
     doh: number;
+  };
+  expirations: {
+    authToken: number;
+    escalatedAuthToken: number;
   };
 };
 
@@ -87,6 +92,10 @@ function load(): Schema {
       tcp: Number(process.env.TCP_PORT),
       doh: Number(process.env.DOH_PORT),
     },
+    expirations: {
+      authToken: Number(process.env.AUTH_TOKEN_EXPIRATION),
+      escalatedAuthToken: Number(process.env.ESCALATED_AUTH_TOKEN_EXPIRATION),
+    },
   };
 }
 
@@ -147,6 +156,14 @@ const schema = Joi.object({
   UDP_PORT: Joi.number().min(1).max(65535).empty('').default(-1),
   TCP_PORT: Joi.number().min(1).max(65535).empty('').default(-1),
   DOH_PORT: Joi.number().min(1).max(65535).empty('').default(-1),
+  AUTH_TOKEN_EXPIRATION: Joi.number()
+    .min(1)
+    .max(byHours(100))
+    .default(byHours(60)),
+  ESCALATED_AUTH_TOKEN_EXPIRATION: Joi.number()
+    .min(1)
+    .max(byHours(100))
+    .default(byMinutes(5)),
 });
 
 export enum ConfigKeys {
@@ -158,6 +175,8 @@ export enum ConfigKeys {
   UDP_PORT = 'ports.udp',
   TCP_PORT = 'ports.tcp',
   DOH_PORT = 'ports.doh',
+  AUTH_TOKEN_EXP = 'expirations.authToken',
+  ESCALATED_AUTH_TOKEN_EXP = 'expirations.escalatedAuthToken',
 }
 
 export default ConfigModule.forRoot({
