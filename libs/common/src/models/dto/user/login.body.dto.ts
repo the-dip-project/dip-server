@@ -1,4 +1,4 @@
-import { IsString, Length } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
 
 export class LoginBodyDTO {
   @Length(64, 64, {
@@ -6,4 +6,8 @@ export class LoginBodyDTO {
   })
   @IsString()
   answer!: string;
+
+  @IsBoolean()
+  @IsOptional()
+  escalate?: boolean;
 }
