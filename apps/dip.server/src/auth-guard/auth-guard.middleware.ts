@@ -92,6 +92,8 @@ export class AuthGuardMiddleware implements NestMiddleware {
   }
 
   public async use(req: Request, res: Response, next: NextFunction) {
+    if (req.user) return next();
+
     try {
       const token =
         req[this.isProd ? 'signedCookies' : 'cookies'][

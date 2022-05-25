@@ -161,4 +161,10 @@ export class UserService {
       { secret: createHash('sha256').update(v4()).digest('hex') },
     );
   }
+
+  public async getUserByApiKey(apiKey: string): Promise<UserEntity> {
+    return await this.userRepository.findOne({
+      where: { apiKey },
+    });
+  }
 }
