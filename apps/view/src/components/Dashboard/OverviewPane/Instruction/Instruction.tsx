@@ -99,7 +99,7 @@ function Instruction() {
 
         <CodeSegment>
           <ShellStart />
-          dip listen --interface &lt;int1&gt; --record &lt;id&gt; --network WAN
+          dip listen --interface &lt;int1&gt; --record &lt;id&gt; --network AUTO
         </CodeSegment>
       </Root>
     </>
