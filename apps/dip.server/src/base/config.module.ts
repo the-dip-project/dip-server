@@ -159,7 +159,7 @@ const schema = Joi.object({
   AUTH_TOKEN_EXPIRATION: Joi.number()
     .min(1)
     .max(byHours(100))
-    .default(byHours(60)),
+    .default(byHours(1)),
   ESCALATED_AUTH_TOKEN_EXPIRATION: Joi.number()
     .min(1)
     .max(byHours(100))
