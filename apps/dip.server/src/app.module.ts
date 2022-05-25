@@ -8,6 +8,7 @@ import { DnsModule } from './dns/dns.module';
 import { DomainModule } from './domain/domain.module';
 import { UserModule } from './user/user.module';
 import { ViewModule } from './view/view.module';
+import { PingModule } from './ping/ping.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ViewModule } from './view/view.module';
     DnsModule,
     UserModule,
     DomainModule,
+    PingModule,
   ],
 })
 export class AppModule {
