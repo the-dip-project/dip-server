@@ -143,6 +143,7 @@ export class UserService {
         username,
         password: createHash('sha256').update(password).digest('hex'),
         role,
+        apiKey: createHash('sha256').update(v4()).digest('hex'),
         secret: createHash('sha256').update(v4()).digest('hex'),
         displayName,
         creationDate: Date.now(),

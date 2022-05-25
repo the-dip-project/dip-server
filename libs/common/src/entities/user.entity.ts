@@ -19,6 +19,9 @@ export class UserEntity {
   @Column('text', { name: 'secret', nullable: false })
   secret!: string;
 
+  @Column('text', { name: 'api_key', nullable: false })
+  apiKey!: string;
+
   @Column('int', { name: 'role', nullable: false })
   role!: number;
 
