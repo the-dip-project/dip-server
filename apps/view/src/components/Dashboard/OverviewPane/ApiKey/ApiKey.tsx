@@ -30,7 +30,7 @@ const GenNewBtnContainer = styled(Flexbox)`
 
 const connector = connect(
   (state: ApplicationState) => ({
-    apiKey: state.app.user?.username ?? '',
+    apiKey: state.app.user?.apiKey ?? '',
   }),
   {},
 );
