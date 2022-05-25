@@ -26,6 +26,7 @@ import { generateAnswer } from '@/common/helpers/generate-answer';
 const connector = connect(
   (state: ApplicationState) => ({
     username: state.app.user.username,
+    escalatedUntil: state.app.user?.escalatedUntil ?? 0,
     callback: state.confirm.suCallback,
   }),
   {
@@ -36,6 +37,7 @@ const connector = connect(
 
 function SuConfirmDialog({
   username,
+  escalatedUntil,
   callback,
   openDialog,
   notify,
@@ -43,8 +45,16 @@ function SuConfirmDialog({
   const passwordRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const escalated = escalatedUntil > Date.now();
 
   const handleClick = async (accepted) => {
+    if (escalatedUntil > Date.now()) {
+      openDialog(DialogContentIndex.NONE);
+      callback(accepted);
+
+      return;
+    }
+
     if (!passwordRef.current) return;
 
     if (!accepted) {
@@ -103,7 +113,8 @@ function SuConfirmDialog({
     }
 
     openDialog(DialogContentIndex.NONE);
-    callback(accepted);
+    await callback(accepted);
+    window.location.reload();
   };
 
   return (
@@ -117,8 +128,15 @@ function SuConfirmDialog({
 
         <br />
 
-        <FormControl variant="filled" error={error.length !== 0} fullWidth>
-          <InputLabel>Password</InputLabel>
+        <FormControl
+          variant="filled"
+          error={error.length !== 0}
+          fullWidth
+          disabled={escalated}
+        >
+          <InputLabel>
+            {escalated ? 'You are escalated' : 'Password'}
+          </InputLabel>
 
           <FilledInput inputRef={passwordRef} type="password" />
 
