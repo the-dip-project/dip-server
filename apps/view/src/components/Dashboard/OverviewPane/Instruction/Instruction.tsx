@@ -65,10 +65,19 @@ function Instruction() {
         <SpacedDivider />
 
         <Typography>
-          Running this command will add API key to your config file. Your config
-          file can be found in&nbsp;<kbd>~/.dip/config.json</kbd> or&nbsp;
+          Set server address to your config file. Your config file can be found
+          in&nbsp;<kbd>~/.dip/config.json</kbd> or&nbsp;
           <kbd>%APPDATA%/.dip/config.json</kbd>. API key provides permanent
           session but very least permission.
+        </Typography>
+
+        <CodeSegment>
+          <ShellStart />
+          dip config set server &lt;DIP server address&gt;
+        </CodeSegment>
+
+        <Typography>
+          Running this command will add API key to your config file.
         </Typography>
 
         <CodeSegment>
