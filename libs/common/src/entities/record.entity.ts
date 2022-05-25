@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -7,6 +8,13 @@ import {
 } from 'typeorm';
 
 import { DomainEntity } from './domain.entity';
+
+export const NOT_UPDATEABLE_COLUMNS: (keyof RecordEntity)[] = [
+  'id',
+  'domainId',
+  'domain',
+  'creationDate',
+];
 
 @Entity('Record')
 export class RecordEntity {
@@ -42,4 +50,7 @@ export class RecordEntity {
   })
   @JoinColumn({ name: 'domain_id', referencedColumnName: 'id' })
   domain!: DomainEntity;
+
+  @CreateDateColumn({ name: 'creation_date', nullable: false })
+  creationDate!: Date;
 }

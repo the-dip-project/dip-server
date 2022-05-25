@@ -27,6 +27,8 @@ export const HttpErrorMessages = {
   DMC_DOMAIN_NOT_FOUND: ['domain not found'],
   DMC_DOMAIN_BELONGS_TO_OTHER_USER: ['domain belongs to other user'],
   DMC_DOMAIN_ALREADY_EXISTS: ['domain already exists'],
+  DMC_RECORD_NOT_FOUND: ['record not found'],
+  DMC_RECORD_BELONGS_TO_OTHER_DOMAIN: ['record belongs to other domain'],
 
   $_UNKNOWN_ERROR: ['unknown error'],
 };

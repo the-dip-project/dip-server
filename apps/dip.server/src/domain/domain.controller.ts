@@ -6,8 +6,11 @@ import { GetAllDomainsQueryDTO } from '@/common/models/dto/domain/get-all-domain
 import { GetDomainParamDTO } from '@/common/models/dto/domain/get-domain.param.dto';
 import { GetRecordsParamDTO } from '@/common/models/dto/domain/get-records.param.dto';
 import { RegisterDomainBodyDTO } from '@/common/models/dto/domain/register-domain.body.dto';
+import { UpdateRecordBodyDTO } from '@/common/models/dto/domain/update-record.body.dto';
+import { UpdateRecordParamDTO } from '@/common/models/dto/domain/update-record.param.dto';
 import { ResponseDTO } from '@/common/models/dto/response.dto';
 import {
+  BadRequestException,
   Body,
   ClassSerializerInterceptor,
   Controller,
@@ -18,6 +21,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   Query,
   UseInterceptors,
 } from '@nestjs/common';
@@ -104,6 +108,40 @@ export class DomainController {
     const records = await this.recordService.getRecordsByDomainId(domainId);
 
     return new ResponseDTO(HttpStatus.OK, [], records);
+  }
+
+  @Put(':domainId/record/:recordId')
+  public async updateRecord(
+    @CurrentUser() user: UserEntity,
+    @Param() { domainId, recordId }: UpdateRecordParamDTO,
+    @Body() record: UpdateRecordBodyDTO,
+  ): Promise<ResponseDTO<RecordEntity>> {
+    const storedDomain = await this.domainService.getDomainById(domainId);
+
+    if (!storedDomain)
+      throw new NotFoundException(HttpErrorMessages.DMC_DOMAIN_NOT_FOUND);
+
+    if (storedDomain.ownerId !== user.id)
+      throw new ForbiddenException(
+        HttpErrorMessages.DMC_DOMAIN_BELONGS_TO_OTHER_USER,
+      );
+
+    const storedRecord = await this.recordService.getRecordById(recordId);
+
+    if (!storedRecord)
+      throw new NotFoundException(HttpErrorMessages.DMC_RECORD_NOT_FOUND);
+
+    if (storedRecord.domainId !== domainId)
+      throw new BadRequestException(
+        HttpErrorMessages.DMC_RECORD_BELONGS_TO_OTHER_DOMAIN,
+      );
+
+    const updatedRecord = await this.recordService.updateRecord(
+      storedRecord,
+      record,
+    );
+
+    return new ResponseDTO(HttpStatus.OK, [], updatedRecord);
   }
 
   @Post()
